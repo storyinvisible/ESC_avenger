@@ -1,0 +1,23 @@
+{
+  "name": "esc_avenger",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/storyinvisible/ESC_avenger.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/storyinvisible/ESC_avenger/issues"
+  },
+  "homepage": "https://github.com/storyinvisible/ESC_avenger#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "rainbow-node-sdk": "^1.67.1"
+  }
+}
