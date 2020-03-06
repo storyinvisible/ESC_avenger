@@ -4,7 +4,7 @@ var bodyParser = require('body-parser');
 var guest_user='';
 var guest_password=''
 
-var user_credentials = require("./rainbow_server");
+
 
 app.use(express.static('SDKAngularSample'));
 app.use(bodyParser.json());
