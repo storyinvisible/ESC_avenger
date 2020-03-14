@@ -12,8 +12,8 @@ sample.controller("sampleController", [
 
     console.log("[DEMO] :: Rainbow IM Application");
 
-    var appId = "";
-    var appSecret= "" ;
+    var appId = "d27e33505e1d11ea9a6dcf004cf8c14e";
+    var appSecret= "RD4HZLgHYqnGgLtblElkeFB4bjS0mcRB6xy5vTNPl6gOlzunAEvzCukld5pEuwma" ;
     console.log("stopappId");
 
     var onReady = function onReady() {

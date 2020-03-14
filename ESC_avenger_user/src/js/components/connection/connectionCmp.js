@@ -51,8 +51,8 @@ angular.module("sample").component("rbxConnection", {
         }
         $.ajax(post_message);
       var userdetail= JSON.parse(JSON.stringify(user_detail));
-      var user = user_detail.user;
-      var password=user_detail.password;
+      var user = 'some@email.com';
+      var password='aPassword_123';
         
       console.log("user :"+user);
       console.log('password :' + password);

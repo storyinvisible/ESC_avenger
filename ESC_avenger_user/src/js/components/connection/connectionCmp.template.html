@@ -14,13 +14,13 @@
 		<button 
 			class="connectionCmp-btn"
 			ng-disabled="isConnected" 
-			ng-click="signin()">Sign In
+			ng-click="signin()">Start Conversation
 		</button>
 
 		<button 
 			class="connectionCmp-btn"
 			ng-disabled="!isConnected"
-			ng-click="signout()">Sign Out
+			ng-click="signout()">End Conversation
 		</button>
 		<img class="connectionCmp-loader" src="./res/progress.gif" ng-if="isLoading"/> 
 	</form>
