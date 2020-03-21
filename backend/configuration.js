@@ -5,14 +5,14 @@ let options =  {
                 "host": "sandbox"                      // Can be "sandbox" (developer platform), "official" or any other hostname when using dedicated AIO
     },
     "credentials": {
-        "login": "storyinvisible@gmail.com",  // The Rainbow email account to use
-        "password": "ux=.Iz<wTy'0"   // The Rainbow associated password to use
+        "login": "",  // The Rainbow email account to use
+        "password": ""   // The Rainbow associated password to use
     },
     // Application identifier
 
     "application": {
-        "appID": "d27e33505e1d11ea9a6dcf004cf8c14e", // Need to create your own application on the hub.openrainbow.com platform
-        "appSecret": "RD4HZLgHYqnGgLtblElkeFB4bjS0mcRB6xy5vTNPl6gOlzunAEvzCukld5pEuwma"
+        "appID": "", // Need to create your own application on the hub.openrainbow.com platform
+        "appSecret": ""
     },
     // */
 
