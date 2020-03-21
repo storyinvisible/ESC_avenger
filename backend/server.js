@@ -5,19 +5,24 @@ const RainbowSDK = require("rainbow-node-sdk");
 const configure = require("./configuration");
 const rainbowsdk = new RainbowSDK(configure.options);
 const users = require("./users");
+const Agent = require("./Agent");
+const AllAgents = require("./AllAgents");
 const list_of_queues = require("./create_queue_dict");
 const port = 8080;
+
 let all_specialities_queues = list_of_queues.all_queues;
+let all_agents = new AllAgents();
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
 rainbowsdk.events.on('rainbow_onready', () => {
 
-    app.get('/getUserInfo', (req, res) => {
-        let result = rainbowsdk.presenceService.getUserConnectedPresence()
-        console.log(result);
-        res.send("OK");
+    app.post('/AgentLogin', function(req,res) {
+        let speciality = req.body.speciality;
+        let agent = new Agent(speciality.toString());
+        all_agents.add_agent(agent);
+        agent.setId(all_agents.get_latest_id());
     })
 
     app.get('/', (req, res) => {

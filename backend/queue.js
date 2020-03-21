@@ -1,10 +1,17 @@
 class Queue {
     constructor() {
         this.accounts = [];
+        this.limit = 0;
     }
 
     enqueue(account) {
-        this.accounts.push(account);
+        if(this.accounts.size < this.limit){
+            this.accounts.push(element);
+            return true;
+        }
+        else{
+            return false
+        }
     }
 
     dequeue() {
@@ -28,6 +35,13 @@ class Queue {
 
     getAllItem() {
         return this.accounts;
+    }
+
+    addLimit(number_of_agent){
+        this.limit = this.limit + (number_of_agent * 10)
+    }
+    emptyslots(){
+        return this.limit - this.accounts.size;
     }
 }
 

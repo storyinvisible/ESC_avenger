@@ -1,8 +1,9 @@
 class Agent{
-    constructor(specialty, status = "available", limit = 1, capacity = 1){
+    constructor(specialty, id = 0, status = "available", limit = 1, capacity = 1){
         this.status = status;
         this.specialty = specialty;
         this.current_user = new Map();
+        this.id = id;
         this.limit = limit;
         this.capacity = capacity;// number of customer he can serve
     }
@@ -33,6 +34,10 @@ class Agent{
     }
     getSpeciality(){
         return this.specialty;
+    }
+
+    setId(id) {
+        this.id = id;
     }
 }
 

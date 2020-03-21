@@ -16,6 +16,10 @@ class AllAgents {
     get_all_agents() {
         return this.all_agents;
     }
+
+    get_latest_id() {
+        return this.agent_id;
+    }
 }
 
 module.exports = AllAgents;
