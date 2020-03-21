@@ -1,48 +1,49 @@
-class Queue {
-    constructor() {
-        this.accounts = [];
-        this.limit = 0;
+class Queue{
+    constructor(){
+        this.items=[]
+        this.limit=0;
+        
     }
-
-    enqueue(account) {
-        if(this.accounts.size < this.limit){
-            this.accounts.push(element);
+    enqueue(element){
+        if(this.items.length<this.limit){
+            this.items.push(element);
             return true;
         }
         else{
             return false
         }
     }
-
-    dequeue() {
-        if (this.emptyQueue()) {
-            return "Empty queue";
+    dequeue(){
+        if(this.isEmpty()) {
+            return null; 
         }
-        return this.accounts.shift();
+        return this.items.shift();
     }
-    
-    getFront() {
-        return this.accounts[0];
+    front() {  
+    if(this.isEmpty()) 
+        console.log("No Element in the queue")
+        return "Null"; 
+    return this.items[0]; 
     }
-
-    emptyQueue() {
-        return this.accounts.length == 0;
+    isEmpty(){
+        return this.items.length == 0; 
     }
-
-    checkQueueStatus() {
-        return this.accounts.length < 1;
-    }
-
-    getAllItem() {
-        return this.accounts;
-    }
-
     addLimit(number_of_agent){
-        this.limit = this.limit + (number_of_agent * 10)
+        this.limit=this.limit+(number_of_agent*10)
+    }
+    currentLimit(){
+        return this.limit
     }
     emptyslots(){
-        return this.limit - this.accounts.size;
+        return (this.limit-this.items.length);
     }
+    getallitem(){
+        return this.items
+    }
+    removeItem(useremail){
+        this.items= this.items.filter(userdetail.email!=useremail)    
+    }
+    
+    
 }
-
-module.exports  = Queue;
+module.exports= Queue;
