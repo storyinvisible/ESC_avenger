@@ -7,6 +7,7 @@ class AllAgents {
     add_agent(agent) {
         this.agent_id++;
         this.all_agents[this.agent_id] = agent;
+    
     }
 
     remove_agent(agent_id) {
@@ -19,6 +20,9 @@ class AllAgents {
 
     get_latest_id() {
         return this.agent_id;
+    }
+    get_agent(id){
+        return this.all_agents[id.toString()]
     }
 }
 
