@@ -2,13 +2,14 @@ const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
 const RainbowSDK = require("rainbow-node-sdk");
-const configure = require("../config/configuration");
+const configure = require("./configuration");
 const rainbowsdk = new RainbowSDK(configure.options);
-const Agent= require('../model/Agent');
-const list_of_queues = require("../model/AllQueues");
-const All_agent= require('../model/AllAgents')
+const users = require("./users");
+const Agent= require('./Agent.js');
+const list_of_queues = require("./create_queue_dict");
+const all_agent= require('./AllAgents.js')
 const port = 8080;
-let Agent_class= new AllAgents();
+let Agent_class= new all_agent();
 let all_specialities_queues = list_of_queues.all_queues;
 let Agentspool= list_of_queues.agent;
 var cors = require('cors')
@@ -18,6 +19,16 @@ app.use(bodyParser.json());
 app.use(express.static('SDKAngularSample'))
 var agent
 function matchAgent(speciality, user){
+    //Todo match the agent and send the data to the front end. through SSE
+    app.get('/new_customer',function(req,res){
+        res.writeHead(200, {
+        'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-cache',
+        'Connection': 'keep-alive',
+    });
+        res.write('\n');
+        
+    })
     
 }
 rainbowsdk.events.on('rainbow_onready', () => {
@@ -35,15 +46,29 @@ rainbowsdk.events.on('rainbow_onready', () => {
         
         all_agents.add_agent(agent);
         agent.setId(all_agents.get_latest_id());
+
         msg.agent_id= all_agent.get_latest_id();
         res.status(200).send(msg)
     })
+    app.post('/AgentLogout', function(req,res) {
+        let recv = JSON.parse(JSON.stringify(req.body));
+        let speciality= recv.speciality;
+        let agent_id = recv.agent_id
+        
+    })
+    app.post('/updateStatus', function(req,res) {
+        
+        let recv = JSON.parse(JSON.stringify(req.body));
+        let speciality= recv.speciality;
+        let agent_id = recv.agent_id
+        
+    })
+
     app.get('/getUserInfo', (req, res) => {
         let result = rainbowsdk.presenceService.getUserConnectedPresence()
         console.log(result);
         res.send("OK");
     })
-
     app.get('/', (req, res) => {
         res.send("Rainbow server is alive")
     })
@@ -73,7 +98,7 @@ rainbowsdk.events.on('rainbow_onready', () => {
             currentUser_email += all_specialities_queues[speciality.toString()].getFront(); 
             currentUser = {email: currentUser_email};
             all_specialities_queues[speciality.toString()].dequeue();
-
+            matchAgent(speciality,user_1)
             /* send back the user email to agent to start conversation */
             res.status(200).json(currentUser);
             console.log(all_specialities_queues);
@@ -137,11 +162,15 @@ rainbowsdk.events.on('rainbow_onready', () => {
                 console.log("Account successfully created!");
 
                 /* enqueue the created account to the correspond speciality queue */
+                
                 console.log(all_specialities_queues[speciality.toString()].emptyslots());
-                if (all_specialities_queues[speciality.toString()].enqueue(normalAcc)) {
+                if(all_specialities_queues[speciality.toString()].isEmpty()){
+                    //try assign to the most available agent . 
+                }
+                if(all_specialities_queues[speciality.toString()].enqueue(normalAcc)){
 
-                    console.log("Queue latest status: ", all_specialities_queues);
-                    res.status(200).json(normalAcc);
+                console.log("Queue latest status: ", all_specialities_queues);
+                res.status(200).json(normalAcc);
                 }
                 else{
                     console.log("create account fails")
