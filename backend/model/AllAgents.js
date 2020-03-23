@@ -13,7 +13,13 @@ class AllAgents {
     addAgent(agent) {
         let speciality = agent["speciality"];
         let id = agent["id"];
-        this.all_agents[speciality.toString()][id.toString()] = agent;
+
+        /* make sure the agent id is unique */
+        if (this.all_agents[id.toString()] != NaN) {
+            this.all_agents[speciality.toString()][id.toString()] = agent;
+        } else {
+            return "Duplicated ID!";
+        }
     }
 
     removeAgent(speciality, id) {
@@ -26,6 +32,29 @@ class AllAgents {
 
     getAllAgents() {
         return this.all_agents;
+    }
+
+    getTheMostAvailableAgent(speciality) {
+        let choosen_agent;
+        let this_spec = this.all_agents[speciality.toString()];
+        let all_capacities = [];
+        for (let agent in this_spec) {
+            if (this_spec[agent]["status"] === "available") {
+                all_capacities.push(this_spec[agent]["capacity"]);
+            }
+        }
+        let found_agent = false;
+        for (let agent in this_spec) {
+            if (this_spec[agent]["capacity"] === Math.max(...all_capacities)) {
+                choosen_agent = this_spec[agent];
+                found_agent = true;
+                break;
+            }
+        }
+        if (found_agent === true) {
+            return choosen_agent;
+        }
+        return "No suitable agent at the moment!";
     }
 }
 
