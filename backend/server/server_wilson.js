@@ -5,13 +5,11 @@ const RainbowSDK = require("rainbow-node-sdk");
 const configure = require("../config/configuration");
 const rainbowsdk = new RainbowSDK(configure.options);
 const Agent= require('../model/Agent');
-const AllQueues = require("../model/AllQueues");
+const list_of_queues = require("../model/AllQueues");
 const AllAgents = require('../model/AllAgents')
 const port = 8080;
-
 let Agent_class= new AllAgents();
-let all_specialities_queues = new AllQueues();
-all_specialities_queues.formAllQueues();
+let all_specialities_queues = list_of_queues.all_queues;
 let Agentspool= list_of_queues.agent;
 var cors = require('cors')
 
@@ -19,7 +17,8 @@ app.use(cors())
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(express.static('SDKAngularSample'))
-// var agent
+
+var agent
 function matchAgent(speciality, user){
     
 }
@@ -31,7 +30,7 @@ rainbowsdk.events.on('rainbow_onready', () => {
         var speciality = recv.speciality
         
         console.log("Requested speciality: ", speciality.toString());
-        all_specialities_queues.getOneQueue(speciality.toString()).addLimit(1);
+        all_specialities_queues[speciality.toString()].addLimit(1);
         var msg= {status:"Successful"}
         agent = new Agent(speciality.toString, "available")
         Agentspool[speciality.toString]
@@ -52,13 +51,13 @@ rainbowsdk.events.on('rainbow_onready', () => {
     })
 
     app.get('/checkAllQueues', (req, res) => {
-        res.status(200).json(all_specialities_queues.getAllQueues());
-        console.log(all_specialities_queues.getAllQueues());
+        res.status(200).json(all_specialities_queues);
+        console.log(all_specialities_queues);
     })
 
     app.get('/checkOneQueue', (req, res) => {
         let speciality = req.query.speciality;
-        let result_queue = all_specialities_queues.getOneQueue(speciality.toString());
+        let result_queue = all_specialities_queues[speciality.toString()];
         res.status(200).json(result_queue);
         console.log(result_queue);
     })
@@ -70,16 +69,16 @@ rainbowsdk.events.on('rainbow_onready', () => {
         agent.dequeue()
         console.log("I am agent with the skill: " + speciality.toString() + ".");
 
-        if (all_specialities_queues.getOneQueue(speciality.toString()).isEmpty() === true) {
+        if (all_specialities_queues[speciality.toString()].emptyQueue() === true) {
             res.send("Empty queue now for " + speciality.toString() + " related request.");
         } else {
-            currentUser_email += all_specialities_queues.getOneQueue(speciality.toString()).getFront(); 
+            currentUser_email += all_specialities_queues[speciality.toString()].getFront(); 
             currentUser = {email: currentUser_email};
-            all_specialities_queues.getOneQueue(speciality.toString()).dequeue();
+            all_specialities_queues[speciality.toString()].dequeue();
 
             /* send back the user email to agent to start conversation */
             res.status(200).json(currentUser);
-            console.log(all_specialities_queues.getAllQueues());
+            console.log(all_specialities_queues);
         }
     })
 
@@ -90,7 +89,7 @@ rainbowsdk.events.on('rainbow_onready', () => {
         let agent_id= post_data.agent_id;
         let agent= Agent_class.get_agent(agent_id);
         agent.end_conversation(user_email)
-        queue = all_specialities_queues.getOneQueue(speciality.toString());
+        queue = all_specialities_queues[speciality.toString()]
         rainbowsdk.admin.getAllUsers().then((user) => {
             let found_user = false;
             for (let i = 0; i < user.length; i++) {
@@ -129,7 +128,7 @@ rainbowsdk.events.on('rainbow_onready', () => {
         console.log("Requested speciality: ", speciality.toString());
 
         /* Check if the requested speciality queue have any available slot currently */
-        if (all_specialities_queues.getOneQueue(speciality.toString()).emptyslots()>0) {
+        if (all_specialities_queues[speciality.toString()].emptyslots()>0) {
             queue_slot_available = true;
         }
         if (queue_slot_available === true) {
@@ -140,10 +139,10 @@ rainbowsdk.events.on('rainbow_onready', () => {
                 console.log("Account successfully created!");
 
                 /* enqueue the created account to the correspond speciality queue */
-                console.log(all_specialities_queues.getOneQueue(speciality.toString()).emptyslots());
-                if (all_specialities_queues.getOneQueue(speciality.toString()).enqueue(normalAcc)) {
+                console.log(all_specialities_queues[speciality.toString()].emptyslots());
+                if (all_specialities_queues[speciality.toString()].enqueue(normalAcc)) {
 
-                    console.log("Queue latest status: ", all_specialities_queues.getAllQueues());
+                    console.log("Queue latest status: ", all_specialities_queues);
                     res.status(200).json(normalAcc);
                 }
                 else{
