@@ -2,15 +2,16 @@ const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
 const RainbowSDK = require("rainbow-node-sdk");
-const configure = require("./configuration");
+const configure = require("../config/configuration");
 const rainbowsdk = new RainbowSDK(configure.options);
-const users = require("./users");
-const Agent= require('./Agent.js');
-const list_of_queues = require("./create_queue_dict");
-const all_agent= require('./AllAgents.js')
+const Agent = require('../model/Agent');
+const AllQueues = require("../model/AllQueues");
+const AllAgents = require('../model/AllAgents')
 const port = 8080;
-let Agent_class= new all_agent();
-let all_specialities_queues = list_of_queues.all_queues;
+
+let Agent_class = new AllAgents();
+let all_specialities_queues = new AllQueues();
+all_specialities_queues.formAllQueues();
 let Agentspool= list_of_queues.agent;
 var cors = require('cors')
 

@@ -1,28 +1,31 @@
+const AllQueues = require("./AllQueues");
+const all_queues = new AllQueues();
+
 class AllAgents {
     constructor() {
         this.all_agents = {};
-        this.agent_id = 0;
+        let specialities = all_queues.getAllSpecialities();
+        for (let i = 0; i < specialities.length; i++) {
+            this.all_agents[specialities[i]] = {};
+        }
     }
 
-    add_agent(agent) {
-        this.agent_id++;
-        this.all_agents[this.agent_id] = agent;
-    
+    addAgent(agent) {
+        let speciality = agent["speciality"];
+        let id = agent["id"];
+        this.all_agents[speciality.toString()][id.toString()] = agent;
     }
 
-    remove_agent(agent_id) {
-        delete this.all_agents[agent_id.toString()];
+    removeAgent(speciality, id) {
+        delete this.all_agents[speciality.toString()][id.toString()];
     }
 
-    get_all_agents() {
+    getOneAgent(speciality, id) {
+        return this.all_agents[speciality.toString()][id.toString()];
+    }
+
+    getAllAgents() {
         return this.all_agents;
-    }
-
-    get_latest_id() {
-        return this.agent_id;
-    }
-    get_agent(id){
-        return this.all_agents[id.toString()]
     }
 }
 
