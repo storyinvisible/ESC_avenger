@@ -2,48 +2,28 @@ const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
 const RainbowSDK = require("rainbow-node-sdk");
-const configure = require("./configuration");
+const configure = require("../config/configuration");
 const rainbowsdk = new RainbowSDK(configure.options);
-const users = require("./users");
-const Agent= require('./Agent.js');
-const list_of_queues = require("./create_queue_dict");
-const all_agent= require('./Allagent.js')
+// const users = require("./users");
+const Agent = require("../model/Agent");
+const AllAgents = require("../model/AllAgents");
+const list_of_queues = require("../model/AllQueues");
 const port = 8080;
-let Agent_class= new AllAgents();
+
 let all_specialities_queues = list_of_queues.all_queues;
-let Agentspool= list_of_queues.agent;
-var cors = require('cors')
-app.use(cors())
+let all_agents = new AllAgents();
+
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
-app.use(express.static('SDKAngularSample'))
-var agent
-function matchAgent(speciality, user){
-    
-}
+
 rainbowsdk.events.on('rainbow_onready', () => {
+
     app.post('/AgentLogin', function(req,res) {
-        console.log("Hello")
-        console.log("Agent Login Request"+req.body)
-        let recv = JSON.parse(JSON.stringify(req.body));
-        var speciality = recv.speciality
-        
-        console.log("Requested speciality: ", speciality.toString());
-        all_specialities_queues[speciality.toString()].addLimit(1);
-        var msg= {status:"Successful"}
-        agent = new Agent(speciality.toString, "available")
-        Agentspool[speciality.toString]
-        
+        let speciality = req.body.speciality;
+        let agent = new Agent(speciality.toString());
         all_agents.add_agent(agent);
         agent.setId(all_agents.get_latest_id());
-    })
-        msg.agent_id= all_agent.get_latest_id();
-        res.status(200).send(msg)
-    })
-    app.get('/getUserInfo', (req, res) => {
-        let result = rainbowsdk.presenceService.getUserConnectedPresence()
-        console.log(result);
-        res.send("OK");
+        res.status(200).json(all_agents);
     })
 
     app.get('/', (req, res) => {
@@ -64,9 +44,9 @@ rainbowsdk.events.on('rainbow_onready', () => {
 
     app.get('/dequeueAccount', (req, res) => {
         let speciality = req.query.speciality;
-        let currentUser_email =req.query.speciality;
+        let currentUser_email = "";
         let currentUser;
-        agent.dequeue()
+
         console.log("I am agent with the skill: " + speciality.toString() + ".");
 
         if (all_specialities_queues[speciality.toString()].emptyQueue() === true) {
@@ -83,13 +63,8 @@ rainbowsdk.events.on('rainbow_onready', () => {
     })
 
     app.post('/deleteAccount', (req, res) => {
-        let post_data= JSON.parse(req.body)
-        let user_email = post_data.email;
-        let speciality = post_data.speciality;
-        let agent_id= post_data.agent_id;
-        let agent= Agent_class.get_agent(agent_id);
-        agent.end_conversation(user_email)
-        queue = all_specialities_queues[speciality.toString()]
+        let user_email = req.body.email;
+        let user_id = "";
         rainbowsdk.admin.getAllUsers().then((user) => {
             let found_user = false;
             for (let i = 0; i < user.length; i++) {
@@ -101,68 +76,79 @@ rainbowsdk.events.on('rainbow_onready', () => {
             }
             if (found_user === true) {
                 rainbowsdk.admin.deleteUser(user_id).then((user) => {
+                    res.send("User successfully deleted!");
                     console.log("User with id ", user_id.toString(), " is successfully deleted!");
                 }).catch((err) => {
                     throw err;
                 })
             } else {
-                console.log("Fail")
+                res.send("The user doesn't exist.");
             }
         }).catch((err) => {
             throw err;
         })
-        
-    let user_detial= agent.dequeue(queue)
-    if(user_detial!=NaN){
-        user_detial.status='Success'
-        res.send(user_detial)
-    }
     })
+    
     app.get('/getUserAccount', (req, res) => {
         let speciality = req.query.speciality;
         let queue_slot_available = false;
-        let first_name= req.query.FirstName;
-        let last_name= req.query.LastName;
-        let paswd="aPassword_123"
 
         console.log("Requested speciality: ", speciality.toString());
 
         /* Check if the requested speciality queue have any available slot currently */
-        if (all_specialities_queues[speciality.toString()].emptyslots()>0) {
+        if (all_specialities_queues[speciality.toString()].checkQueueStatus() === true) {
             queue_slot_available = true;
         }
+
         if (queue_slot_available === true) {
-            var emaildetail  = (+new Date).toString(36)+"@someemail.com";  
-            let normalAcc = {status: "Success",email: emaildetail, password: paswd};
-
-            rainbowsdk.admin.createUserInCompany(emaildetail, paswd ,first_name,last_name).then((user) => {
-                console.log("Account successfully created!");
-
-                /* enqueue the created account to the correspond speciality queue */
-                this_queue= 
-                console.log(all_specialities_queues[speciality.toString()].emptyslots());
-                if(all_specialities_queues[speciality.toString()].enqueue(normalAcc)){
-
-                console.log("Queue latest status: ", all_specialities_queues);
-                res.status(200).json(normalAcc);
+            let email_lists = users.getALlEmails();
+            rainbowsdk.admin.getAllUsers().then((user) => {
+                console.log("All users' email retreived!");
+                let available_acc_position = 0;
+                let found_available = false;
+                for (let i = 0; i < email_lists.length; i++) {
+                    let stop_searching = true;
+                    for (let j = 0; j < user.length; j++) {
+                        if (email_lists[i] == user[j].loginEmail) {
+                            /* if the current email is already in the company list, continue searching */
+                            stop_searching = false;
+                            break;
+                        }
+                    }
+                    if (stop_searching == true) {
+                        available_acc_position += (i + 1);
+                        found_available = true;
+                        break;
+                    }
                 }
-                else{
-                    console.log("create account fails")
+                if (found_available == false) {
+                    res.send("Sorry, no available slot currently!");
+                } else {
+                    let targeted_acc = "user";
+                    targeted_acc += available_acc_position.toString();
+                    let acc = users.userList[targeted_acc];
+                    let normalAcc = {login: acc.userEmail, password: acc.userPassword};
+                    rainbowsdk.admin.createUserInCompany(acc.userEmail, acc.userPassword, acc.userFirstname, acc.userLastname).then((user) => {
+                        console.log("Account successfully created!");
+
+                        /* enqueue the created account to the correspond speciality queue */
+                        all_specialities_queues[speciality.toString()].enqueue(acc.userEmail);
+
+                        console.log("Queue latest status: ", all_specialities_queues);
+                        res.status(200).json(normalAcc);
+                    }).catch((err) => {
+                        throw err;
+                    })
                 }
             }).catch((err) => {
-                normalAcc = {status: "Fail",};
-                res.send(JSON.stringify(normalAcc))
                 throw err;
             })
-            
+        } else {
+            res.send("Sorry, please come back later!");
         }
-          
-       else {
-           normalAcc = {status: "Fail",};
-           res.send(JSON.stringify(normalAcc))
-        }
-    })
+    });
 })
+
 app.listen(port, () => {
     console.log("The server is running now!");
 });

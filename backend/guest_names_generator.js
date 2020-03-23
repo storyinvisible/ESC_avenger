@@ -13,7 +13,7 @@ const generate_guest_name = () => {
 
     // forming last name
     last_name += capital_charset[Math.floor(Math.random() * capital_charset.length)];
-    for (let j = 0; j < name_length; j++) {
+    for (let j = 1; j < name_length; j++) {
         last_name += charset[Math.floor(Math.random() * charset.length)];
     }
 
