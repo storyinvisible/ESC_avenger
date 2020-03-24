@@ -5,7 +5,7 @@ class Queue{
         
     }
     enqueue(element){
-        if(this.items.length<this.limit){
+        if(this.items.length <= this.limit){
             this.items.push(element);
             return true;
         }
@@ -20,10 +20,11 @@ class Queue{
         return this.items.shift();
     }
     front() {  
-    if(this.isEmpty()) 
-        console.log("No Element in the queue")
-        return "Null"; 
-    return this.items[0]; 
+        if(this.isEmpty()) {
+            console.log("No Element in the queue")
+            return "Null"; 
+        }
+        return this.items[0]; 
     }
     isEmpty(){
         return this.items.length == 0; 
@@ -38,10 +39,11 @@ class Queue{
         return (this.limit-this.items.length);
     }
     getallitem(){
-        return this.items
+        return this.items;
     }
     removeItem(useremail){
-        this.items= this.items.filter(userdetail.email!=useremail)    
+        let useremail_index = this.items.indexOf(useremail);
+        this.items.splice(useremail_index, 1);
     }
     
     
