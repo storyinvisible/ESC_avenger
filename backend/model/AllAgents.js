@@ -15,7 +15,7 @@ class AllAgents {
         let id = agent["id"];
 
         /* make sure the agent id is unique */
-        if (this.all_agents[id.toString()] != NaN) {
+        if (!(id.toString() in this.all_agents[speciality.toString()])) {
             this.all_agents[speciality.toString()][id.toString()] = agent;
         } else {
             return "Duplicated ID!";
