@@ -6,7 +6,7 @@ var guest_password=''
 
 
 
-app.use(express.static('SDKAngularSample'));
+app.use(express.static('ESC_avenger_user'));
 app.use(bodyParser.json());
 
 
