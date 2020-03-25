@@ -17,7 +17,7 @@ class Queue{
         if(this.isEmpty()) {
             return null; 
         }
-        return this.items.shift();
+        this.items.shift();
     }
     front() {  
         if(this.isEmpty()) {
@@ -41,11 +41,12 @@ class Queue{
     getallitem(){
         return this.items;
     }
-    removeItem(useremail){
-        let useremail_index = this.items.indexOf(useremail);
-        this.items.splice(useremail_index, 1);
+    removeItem(user){
+        let user_index = this.items.indexOf(user);
+        this.items.splice(user_index, 1);
     }
     
     
 }
+
 module.exports= Queue;

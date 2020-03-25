@@ -10,10 +10,11 @@ class Agent{
     changestatus(status){
         this.status = status;  
     }
-    dequeue(queue, app){
-        if(this.status == 'available' && this.capacity != 0 && queue.isEmpty()){
-            var user_detail= queue.dequeue();
-            this.current_user.set(user_detail.email, user_detail.name)
+    agentDequeue(targeted_queue){
+        if(this.status == 'available' && this.capacity != 0 && targeted_queue.length !== 0){
+            let user_detail = targeted_queue[0];
+            targeted_queue.shift();
+            this.current_user.set(user_detail["email"], user_detail["name"])
             this.capacity = this.limit - this.current_user.size;
             return user_detail;
         }

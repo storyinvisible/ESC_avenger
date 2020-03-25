@@ -30,9 +30,9 @@ describe("getOneQueue", () => {
     it("should return queue of particular speciality", () => {
         let all_queues = new AllQueues();
         all_queues.formAllQueues();
-        all_queues.getAllQueues()["finance"]["items"].push("test@email.com");
+        all_queues.getAllQueues()["finance"]["items"].push({"email": "test@email.com", "name": "test"});
         let expected = {
-            "items": ["test@email.com"],
+            "items": [{"email": "test@email.com", "name": "test"}],
             "limit": 0
         };
         let actual = all_queues.getOneQueue("finance");
