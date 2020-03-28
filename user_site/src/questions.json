@@ -1,0 +1,11 @@
+[
+    {
+        "question": "Hello! What are you looking for?",
+        "optionA": "Finance",
+        "optionB": "management",
+        "optionC": "technical",
+        "optionD": "HR",
+        "optionE": "1500 degrees Celcius",
+        "answer": "Accommodation"
+    }
+]
