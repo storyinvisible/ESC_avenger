@@ -4,7 +4,7 @@
   "description": "Rainbow Web SDK Angular Sample",
   "main": "index.js",
   "scripts": {
-    "start": "./node_modules/http-server/bin/http-server -o -p 8888"
+    "start": "http-server -o -p 8888"
   },
   "repository": {
     "type": "git",

@@ -52,7 +52,7 @@ class AllAgents {
             }
         }
         if (max=0) {
-            return 0;
+            return null;
         }
         return most_available
     }

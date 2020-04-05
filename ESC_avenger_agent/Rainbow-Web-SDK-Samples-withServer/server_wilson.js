@@ -5,7 +5,6 @@ const bodyParser = require("body-parser");
 const RainbowSDK = require("rainbow-node-sdk");
 const configure = require("./configuration");
 const rainbowsdk = new RainbowSDK(configure.options);
-const users = require("./users");
 const Agent= require('./Agent.js');
 const list_of_queues = require("./create_queue_dict");
 const all_agent= require('./AllAgents.js')
@@ -19,17 +18,24 @@ app.use(cors())
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(express.static('SDKAngularSample'))
-
-function matchAgent(speciality, user){
+app.use(express.static('SDKAngularSample'))
+function matchAgent(speciality, ){
     console.log("Match agent is called")
     //Todo match the agent and send the data to the front end. through SSE
     const data = {
         spec: speciality,
         customer: user
     }
-    event_emit.emit("new_customer",data)
+    let agent = Agent_class.getTheMostAvailableAgent(speciality)
+    if(agent!=null){
+        data= agent.dequeue(all_specialities_queues[speciality])
+        if(data!=null){
+            
+            event_emit.emit("new_customer",data)
+        }
+    }
+    
 }
-
 rainbowsdk.events.on('rainbow_onready', () => {
     // //test matchAgent
     // app.get('/new_customer',function(req,res){
@@ -151,42 +157,52 @@ rainbowsdk.events.on('rainbow_onready', () => {
         }
     })
 
-    app.post('/endconversation', (req, res) => {
-        let post_data= JSON.parse(req.body)
-        let user_email = post_data.email;
-        let speciality = post_data.speciality;
-        let agent_id= post_data.agent_id;
-        let agent= Agent_class.get_agent(agent_id);
+    app.post('/endconversation', function(req,res) {
+        console.log("Ending Conversation")
+       let post_data= JSON.parse(JSON.stringify(req.body));
+        let user_email = post_data.email.toString();
+        let speciality = post_data.speciality.toString();
+        let agent_id= parseInt(post_data.agent_id.toString());
+        let agent= Agent_class.getOneAgent(speciality,agent_id);
+        let msg={status:"Fail"}
         agent.end_conversation(user_email)
         queue = all_specialities_queues[speciality.toString()]
+        console.log("Deleting Account : "+user_email)
         rainbowsdk.admin.getAllUsers().then((user) => {
             let found_user = false;
+            console.log("Find the deleting users")
+            let user_id=''
             for (let i = 0; i < user.length; i++) {
                 if (user[i].loginEmail == user_email.toString()) {
                     user_id += user[i].id;
                     found_user = true;
+                    console.log("The deleted user found")
                     break;
                 }
             }
             if (found_user === true) {
                 rainbowsdk.admin.deleteUser(user_id).then((user) => {
                     console.log("User with id ", user_id.toString(), " is successfully deleted!");
+                    msg.status= "Successful"
+                    agent.end_conversation(user_email)
+                   
                 }).catch((err) => {
+                    msg.status="Fail"
                     throw err;
                 })
             } else {
                 console.log("Fail")
             }
         }).catch((err) => {
-            throw err;
-        })
+             throw err;
+         })
         
-    let user_detial= agent.dequeue(queue)
-    if(user_detial!=NaN){
-        user_detial.status='Success'
-        res.send(user_detial)
+     let user_detail= agent.dequeue(queue)
+     if(user_detail!=NaN){
+         user_detail.status='Success'
+         res.send(user_detail)
     }
-    })
+     })
     app.get('/getUserAccount', (req, res) => {
         let speciality = req.query.speciality;
         let queue_slot_available = false;
@@ -202,20 +218,18 @@ rainbowsdk.events.on('rainbow_onready', () => {
             queue_slot_available = true;
         }
         if (queue_slot_available === true) {
-            var emaildetail  = (+new Date).toString(36)+"@someemail.com";  
-            let normalAcc = {status: "Success",email: emaildetail, password: paswd};
+            var user_hash =(+new Date).toString(36)
+            var emaildetail  =user_hash +"@someemail.com";  
+            let normalAcc = {status: "Success",email: emaildetail, password: paswd,FirstName: first_name+user_hash};
 
-            rainbowsdk.admin.createUserInCompany(emaildetail, paswd ,first_name,last_name).then((user) => {
+            rainbowsdk.admin.createUserInCompany(emaildetail, paswd ,first_name+user_hash,last_name).then((user) => {
                 console.log("Account successfully created!");
 
                 /* enqueue the created account to the correspond speciality queue */
                 
                 console.log(all_specialities_queues[speciality.toString()].emptyslots());
                 console.log("The queue is empty : "+ all_specialities_queues[speciality.toString()].isEmpty() )
-                if(all_specialities_queues[speciality.toString()].isEmpty()){
-                    //try assign to the most available agent . 
-                    matchAgent(speciality.toString(),first_name)
-                }
+
                 if(all_specialities_queues[speciality.toString()].enqueue(normalAcc)){
 
                 console.log("Queue latest status: ", all_specialities_queues);
@@ -224,6 +238,11 @@ rainbowsdk.events.on('rainbow_onready', () => {
                 else{
                     console.log("create account fails")
                 }
+                if(all_specialities_queues[speciality.toString()].isEmpty()){
+                    //try assign to the most available agent . 
+                    matchAgent(speciality.toString(),first_name+user_hash)
+                }
+                
             }).catch((err) => {
                 normalAcc = {status: "Fail",};
                 res.send(JSON.stringify(normalAcc))
@@ -231,7 +250,7 @@ rainbowsdk.events.on('rainbow_onready', () => {
             })
             
         }
-          
+           
        else {
            normalAcc = {status: "Fail",};
            res.send(JSON.stringify(normalAcc))
