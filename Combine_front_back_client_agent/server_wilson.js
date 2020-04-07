@@ -30,11 +30,15 @@ client.use(express.static('Client'))
 function matchAgent(speciality, user){
     console.log("Match agent is called")
     //Todo match the agent and send the data to the front end. through SSE
-    const data = {
-        spec: speciality,
-        customer: user
+    user.speciality=speciality
+    let agent = Agent_class.getTheMostAvailableAgent(speciality)
+    if(agent!=null){
+        data= agent.dequeue(all_specialities_queues[speciality])
+        if(data!=null){
+            
+            event_emit.emit("new_customer",user)
+        }
     }
-    event_emit.emit("new_customer",data)
 }
 
 rainbowsdk.events.on('rainbow_onready', () => {
@@ -190,18 +194,18 @@ rainbowsdk.events.on('rainbow_onready', () => {
         }
         if (queue_slot_available === true) {
             var emaildetail  = (+new Date).toString(36)+"@someemail.com";  
-            let normalAcc = {status: "Success",email: emaildetail, password: paswd};
+            let normalAcc = {status: "Success",email: emaildetail, password: paswd,};
 
             rainbowsdk.admin.createUserInCompany(emaildetail, paswd ,first_name,last_name).then((user) => {
                 console.log("Account successfully created!");
 
                 /* enqueue the created account to the correspond speciality queue */
-                
+                normalAcc.speciality=speciality.toString();
                 console.log(all_specialities_queues[speciality.toString()].emptyslots());
                 console.log("The queue is empty : "+ all_specialities_queues[speciality.toString()].isEmpty() )
                 if(all_specialities_queues[speciality.toString()].isEmpty()){
                     //try assign to the most available agent . 
-                    matchAgent(speciality.toString(),first_name)
+                    matchAgent(speciality.toString(),normalAcc)
                 }
                 if(all_specialities_queues[speciality.toString()].enqueue(normalAcc)){
 
