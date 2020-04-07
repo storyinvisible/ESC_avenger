@@ -21,35 +21,38 @@
 			</select>
 
 		<input
-			name="username"
+			name="firstname"
 			type="text" 
 			id="username"
-			ng-model="user.name"
-			placeholder="Your login" 
+			ng-model="user.firstname"
+			placeholder="First Name" 
 			required
 			autofocus/>
 			 
 		<input 
-			name="password"
-			type="password"
-			ng-model="user.password"
+			name="lastname"
+			type="text"
+			ng-model="user.lastname"
 			id="password"
-			placeholder="Your password" 
+			placeholder="Last Name" 
 			required/> 
 		<button 
 			class="connectionCmp-btn"
 			ng-disabled="isConnected" 
-			ng-click="signin()">Sign In
+			ng-click="signin()">Start Chatting
 		</button>
-
+		<!--
 		<button 
 			class="connectionCmp-btn"
 			ng-disabled="!isConnected"
 			ng-click="signout()">Sign Out
 		</button>
 		<img class="connectionCmp-loader" src="./res/progress.gif" ng-if="isLoading"/> 
+		-->
 	</form>
+	<!--
 	<div class="connectionCmp-state-result">
 		<div class="connectionCmp-state">State: <b class="connectionCmp-state-value">{{state}}</b></div>
 	</div>
+	-->
 </div>

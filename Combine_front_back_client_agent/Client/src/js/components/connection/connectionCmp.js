@@ -25,29 +25,24 @@ angular.module("sample").component("rbxConnection", {
     $scope.specialities = [
       {
         id: 0,
-        value: "order",
-        name: "Order Consulting"
+        value: "finance",
+        name: "finance"
       },
       {
         id: 1,
-        value: "product",
-        name: "Product Consulting"
+        value: "technical",
+        name: "technical"
       },
       {
         id: 2,
-        value: "destination",
-        name: "Destination Information"
+        value: "management",
+        name: "management"
       },
       {
         id: 3,
-        value: "travel",
-        name: "Travel Guide"
+        value: "HR",
+        name: "HR"
       },
-      {
-        id: 4,
-        value: "complaints",
-        name: "Complaints"
-      }
     ];
 
     $scope.selectedItem = $scope.hosts[0];
@@ -60,10 +55,34 @@ angular.module("sample").component("rbxConnection", {
 
       saveToStorage();
 
+      var data1={
+        speciality: $scope.selectedSpeciality,
+        FirstName: $scope.user.firstname,
+        LastName: $scope.user.lastname, 
+      }
+
+      var user_detail={}
+      var post_message={
+        type: 'GET',
+        data: data1,
+        contentType: 'application/json',
+        url:'http://localhost:3007/getUserAccount',
+        async: false,
+        dataType: 'json',
+      };
+      var user_detail={}
+      post_message.success = function(data){
+        console.log("Sucess");
+        console.log(JSON.stringify(data));
+        user_detail=data;
+      }
+
+      $.ajax(post_message);
+
       switch ($scope.selectedItem.value) {
         case "rainbow":
           rainbowSDK.connection
-            .signinOnRainbowOfficial($scope.user.name, $scope.user.password)
+            .signinOnRainbowOfficial(user_detail.email, user_detail.password)
             //.signinOnRainbowOfficial("664276@qq.com", "Asd@123456")
             .then(function(account) {
               console.log("[DEMO] :: Successfully signed!");
@@ -98,30 +117,6 @@ angular.module("sample").component("rbxConnection", {
               $scope.isLoading = false;
               $scope.isConnected = false;
             });
-
-            //add connection to server
-            var data1={
-              // name:$scope.user.name,
-              speciality:"finance"
-            }
-           
-            var post_message={
-              type: 'POST',
-              //data: JSON.stringify($scope.selectedSpeciality.name),
-              data: JSON.stringify(data1),
-              contentType: 'application/json',
-              url:'http://localhost:8080/AgentLogin',
-              async: false,
-              dataType: 'json',
-              };
-            var agent_detail={}
-            post_message.success = function(data){
-              console.log("Jessie, Success");
-              console.log(JSON.stringify(data));
-              agent_detail=data;
-            }
-           
-            $.ajax(post_message)
           break;
       }
     };
