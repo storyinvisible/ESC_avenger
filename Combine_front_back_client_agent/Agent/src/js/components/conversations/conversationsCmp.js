@@ -20,6 +20,7 @@ angular.module("sample").component("rbxConversations", {
         if (conversation.type === 0) {
           oneToOneConversations.push(conversation);
           console.log("Jessie, conversationsCmp");
+          //console.log("Jessie, share data agent_id: " + $rootScope.agentId);
         }
       });
 

@@ -13,7 +13,7 @@ angular.module("sample").component("rbxContacts", {
 
     var sseSource = new EventSource('/new_customer');
 
-    var newCustomers = [];
+    var newCustomer;
 
     this.$onInit = function() {
       var ctrl = $scope;
@@ -63,22 +63,29 @@ angular.module("sample").component("rbxContacts", {
       sseSource.addEventListener('message', function(e){
         const messageData = JSON.parse(e.data);
         console.log("sseSource listener: " + e.data);
+        $rootScope.customerEmail = messageData.email;
+        console.log("Share data customer email: " + $rootScope.customerEmail)
+        console.log("sseSource listener: customer email is: " + messageData.email)
         //newCustomers.push(messageData);
-        console.log("sseSource listener: " + messageData.customer);
-      });
-
-      $scope.sendMessage = function() {
-        // for (i=0; i<newCustomers.length; i++){
-        //   const name = newCustomers[i].customer.first_name;
-        //   console.log("Jessie, send message: " + name);
-          rainbowSDK.contacts.searchByName("RT Li", 1).then(function(usersFound) {
+        console.log("sseSource listener: " + messageData.FirstName);
+        newCustomer = messageData.FirstName;
+        
+        if (e.data != {}){
+          console.log("Jessie: send message automatically to : " + newCustomer);
+          rainbowSDK.contacts.searchByName(newCustomer, 1).then(function(usersFound) {
+            
             if(usersFound.length > 0) {
                 // At least one user has been found
                 usersFound.forEach(function(user) {
                     // Do something with each contact returned
                     console.log("Jessie, contact found");
-                    rainbowSDK.im.sendMessageToConversation(user.conversation, "Hello, I'm your agent!");
-                    rainbowSDK.im.sendMessageToConversation(user.conversation, "My name is Jessie");
+                    rainbowSDK.conversations.openConversationForContact(user).then(function(conversation){
+                      rainbowSDK.im.sendMessageToConversation(conversation, "Hello, I'm your agent!");
+                      
+                      rainbowSDK.im.sendMessageToConversation(conversation, "My name is Jessie");
+                      console.log("Message sent!!!!")
+                    })
+                    
                     //newCustomers.pop(newCustomers[i]);
                 });
             }
@@ -86,6 +93,40 @@ angular.module("sample").component("rbxContacts", {
                 // No contact returned
                 console.log("Jessie, no contact found")
             }
+          }).catch((err) =>{
+            throw err;
+          });
+        }
+      });
+
+      $scope.sendMessage = function() {
+        // for (i=0; i<newCustomers.length; i++){
+        //   const name = newCustomers[i].customer.first_name;
+        //   console.log("Jessie, send message: " + name);
+          console.log("Jessie: send message to : " + newCustomer);
+          rainbowSDK.contacts.searchByName(newCustomer, 1).then(function(usersFound) {
+            
+            if(usersFound.length > 0) {
+                // At least one user has been found
+                usersFound.forEach(function(user) {
+                    // Do something with each contact returned
+                    console.log("Jessie, contact found");
+                    rainbowSDK.conversations.openConversationForContact(user).then(function(conversation){
+                      rainbowSDK.im.sendMessageToConversation(conversation, "Hello, I'm your agent!");
+                      
+                      rainbowSDK.im.sendMessageToConversation(conversation, "My name is Jessie");
+                      console.log("Message sent!!!!")
+                    })
+                    
+                    //newCustomers.pop(newCustomers[i]);
+                });
+            }
+            else {
+                // No contact returned
+                console.log("Jessie, no contact found")
+            }
+          }).catch((err) =>{
+            throw err;
           });
         }
         

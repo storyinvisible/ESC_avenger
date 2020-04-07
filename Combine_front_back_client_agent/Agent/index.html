@@ -32,25 +32,38 @@
         <script src="./src/js/components/user/userCmp.js"></script>
         <script src="./src/js/components/conversations/conversationsCmp.js"></script>
         <script src="./src/js/components/conversations/conversationCmp.js"></script>
-        <script src="./src/js/components/conversations/messageCmp.js"></script>
+		<script src="./src/js/components/conversations/messageCmp.js"></script>
+		<script src="jquery-1.10.2.min.js"></script>
 	</head>
 
 	<body>
 		<!-- Demo specific part -->
-		<div class="app-contacts">
-			<rbx-contacts name="rbxContacts"></rbx-contacts>
-		</div>
-		
-		<div class="app-user">
-			<rbx-connection name="rbxConnection"></rbx-connection>
-			<rbx-user name="rbxUser"></rbx-user>
-			<rbx-presence name="rbxPresence"></rbx-presence>
+		<div ng-app="mainApp">
+			<div class="app-contacts">
+				<rbx-contacts name="rbxContacts"></rbx-contacts>
+			</div>
+			
+			<div class="app-user">
+				<rbx-connection name="rbxConnection"></rbx-connection>
+				<rbx-user name="rbxUser"></rbx-user>
+				<rbx-presence name="rbxPresence"></rbx-presence>
+			</div>
+	
+			<div class="app-container">
+				<rbx-conversations name="rbxConversations"></rbx-conversations>
+			</div>
 		</div>
 
-		<div class="app-container">
-			<rbx-conversations name="rbxConversations"></rbx-conversations>
-		</div>
-
+		<script>
+			var mainApp = angular.module("mainApp", []);
+			mainApp.factory('Fact', function(){
+				mainApp.run(function($rootScope){
+					$rootScope.agentId;
+					$rootScope.agentSpeciality;
+					$rootScope.customerEmail;
+				})
+			});
+		</script>
  	</body>	
 
 </html>

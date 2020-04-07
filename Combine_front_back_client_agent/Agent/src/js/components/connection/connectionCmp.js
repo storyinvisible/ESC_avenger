@@ -23,35 +23,32 @@ angular.module("sample").component("rbxConnection", {
     ];
 
     $scope.specialities = [
+      
       {
         id: 0,
-        value: "order",
-        name: "Order Consulting"
+        value: "finance",
+        name: "Finance"
       },
       {
         id: 1,
-        value: "product",
-        name: "Product Consulting"
+        value: "technical",
+        name: "Technical"
       },
       {
         id: 2,
-        value: "destination",
-        name: "Destination Information"
+        value: "management",
+        name: "Management"
       },
       {
         id: 3,
-        value: "travel",
-        name: "Travel Guide"
-      },
-      {
-        id: 4,
-        value: "complaints",
-        name: "Complaints"
+        value: "HR",
+        name: "HR"
       }
     ];
 
     $scope.selectedItem = $scope.hosts[0];
     $scope.selectedSpeciality = $scope.specialities[0];
+    $rootScope.agentSpeciality = $scope.selectedSpeciality;
 
     var handlers = [];
 
@@ -92,6 +89,9 @@ angular.module("sample").component("rbxConnection", {
               console.log("[DEMO] :: Successfully signed!");
               $scope.isLoading = false;
               $scope.isConnected = true;
+              rainbowSDK.presence.setPresenceTo(
+                rainbowSDK.presence.RAINBOW_PRESENCE_ONLINE
+              )
             })
             .catch(function(err) {
               console.log("[DEMO] :: Error when sign-in", err);
@@ -102,7 +102,7 @@ angular.module("sample").component("rbxConnection", {
             //add connection to server
             var data1={
               // name:$scope.user.name,
-              speciality:"finance"
+              speciality:$scope.selectedSpeciality.value
             }
            
             var post_message={
@@ -119,6 +119,7 @@ angular.module("sample").component("rbxConnection", {
               console.log("Jessie, Success");
               console.log(JSON.stringify(data));
               agent_detail=data;
+              $rootScope.agentId = data.agent_id;
             }
            
             $.ajax(post_message)

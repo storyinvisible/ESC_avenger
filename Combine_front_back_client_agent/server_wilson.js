@@ -6,7 +6,7 @@ const bodyParser = require("body-parser");
 const RainbowSDK = require("rainbow-node-sdk");
 const configure = require("./configuration");
 const rainbowsdk = new RainbowSDK(configure.options);
-const users = require("./users");
+//const users = require("./users");
 const Agent= require('./Agent.js');
 const list_of_queues = require("./create_queue_dict");
 const all_agent= require('./AllAgents.js')
@@ -34,10 +34,10 @@ function matchAgent(speciality, user){
     let agent = Agent_class.getTheMostAvailableAgent(speciality)
     if(agent!=null){
         data= agent.dequeue(all_specialities_queues[speciality])
-        if(data!=null){
+        
             
-            event_emit.emit("new_customer",user)
-        }
+        event_emit.emit("new_customer",user)
+        
     }
 }
 
@@ -193,20 +193,18 @@ rainbowsdk.events.on('rainbow_onready', () => {
             queue_slot_available = true;
         }
         if (queue_slot_available === true) {
-            var emaildetail  = (+new Date).toString(36)+"@someemail.com";  
-            let normalAcc = {status: "Success",email: emaildetail, password: paswd,};
+            var hashcoode=(+new Date).toString(36)
+            var emaildetail  = hashcoode+"@someemail.com";  
+            let normalAcc = {status: "Success",email: emaildetail, password: paswd,FirstName: first_name+hashcoode};
 
-            rainbowsdk.admin.createUserInCompany(emaildetail, paswd ,first_name,last_name).then((user) => {
+            rainbowsdk.admin.createUserInCompany(emaildetail, paswd ,first_name+hashcoode,last_name).then((user) => {
                 console.log("Account successfully created!");
 
                 /* enqueue the created account to the correspond speciality queue */
                 normalAcc.speciality=speciality.toString();
                 console.log(all_specialities_queues[speciality.toString()].emptyslots());
                 console.log("The queue is empty : "+ all_specialities_queues[speciality.toString()].isEmpty() )
-                if(all_specialities_queues[speciality.toString()].isEmpty()){
-                    //try assign to the most available agent . 
-                    matchAgent(speciality.toString(),normalAcc)
-                }
+
                 if(all_specialities_queues[speciality.toString()].enqueue(normalAcc)){
 
                 console.log("Queue latest status: ", all_specialities_queues);
@@ -214,6 +212,10 @@ rainbowsdk.events.on('rainbow_onready', () => {
                 }
                 else{
                     console.log("create account fails")
+                }
+                if(all_specialities_queues[speciality.toString()].size()==1){
+                    //try assign to the most available agent . 
+                    matchAgent(speciality.toString(),normalAcc)
                 }
             }).catch((err) => {
                 normalAcc = {status: "Fail",};
