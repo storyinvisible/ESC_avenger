@@ -6,7 +6,7 @@ const bodyParser = require("body-parser");
 const RainbowSDK = require("rainbow-node-sdk");
 const configure = require("./configuration");
 const rainbowsdk = new RainbowSDK(configure.options);
-const users = require("./users");
+
 const Agent= require('./Agent.js');
 const list_of_queues = require("./create_queue_dict");
 const all_agent= require('./AllAgents.js')
@@ -203,10 +203,7 @@ rainbowsdk.events.on('rainbow_onready', () => {
                 normalAcc.speciality=speciality.toString();
                 console.log(all_specialities_queues[speciality.toString()].emptyslots());
                 console.log("The queue is empty : "+ all_specialities_queues[speciality.toString()].isEmpty() )
-                if(all_specialities_queues[speciality.toString()].isEmpty()){
-                    //try assign to the most available agent . 
-                    matchAgent(speciality.toString(),normalAcc)
-                }
+                
                 if(all_specialities_queues[speciality.toString()].enqueue(normalAcc)){
 
                 console.log("Queue latest status: ", all_specialities_queues);
@@ -214,6 +211,10 @@ rainbowsdk.events.on('rainbow_onready', () => {
                 }
                 else{
                     console.log("create account fails")
+                }
+                if(all_specialities_queues[speciality.toString()].isEmpty()){
+                    //try assign to the most available agent . 
+                    matchAgent(speciality.toString(),normalAcc)
                 }
             }).catch((err) => {
                 normalAcc = {status: "Fail",};
