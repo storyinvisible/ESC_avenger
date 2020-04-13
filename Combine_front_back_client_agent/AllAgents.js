@@ -20,7 +20,7 @@ class AllAgents {
         let speciality= agent.getSpeciality()
         console.log("before assignation")
         this.all_agents[speciality][this.agent_count] = agent;
-        console.log("after assignation")
+        console.log("After assignation ")
         return this.agent_count
 
     }
@@ -30,7 +30,8 @@ class AllAgents {
     }
 
     getOneAgent(speciality, id) {
-        return this.all_agents[speciality][id];
+        console.log("The acquired Agent speciality :"+ speciality+"Agent ID"+id)
+        return this.all_agents[speciality][1];
     }
 
     getAllAgents() {
@@ -52,7 +53,7 @@ class AllAgents {
             }
         }
         if (max=0) {
-            return 0;
+            return null;
         }
         return most_available
     }

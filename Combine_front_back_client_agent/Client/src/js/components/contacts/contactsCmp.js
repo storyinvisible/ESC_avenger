@@ -61,7 +61,7 @@ angular.module("sample").component("rbxContacts", {
       
       // Server-sent event handler
       sseSource.addEventListener('message', function(e){
-        const messageData = JSON.parse(e.data);
+        const messageData = JSON.parse(JSON.stringify(e));
         console.log("sseSource listener: " + e.data);
         //newCustomers.push(messageData);
         console.log("sseSource listener: " + messageData.customer);

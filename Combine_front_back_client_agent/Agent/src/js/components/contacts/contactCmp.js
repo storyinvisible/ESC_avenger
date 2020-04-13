@@ -2,7 +2,7 @@ angular.module('sample').component('rbxContact', {
     bindings: {
         item: '<'
     },
-    controller : function(rainbowSDK, $scope) {
+    controller : function(rainbowSDK, $scope,$rootScope) {
 
 		this.$onInit = function () {
 			var ctrl = $scope;
@@ -24,12 +24,17 @@ angular.module('sample').component('rbxContact', {
 			$scope.closeConversation = function() {
 				rainbowSDK.conversations.closeConversation($scope.$ctrl.item.conversation).then(function(conversation) {
 					console.log("Jessie, closeConversation");
+					console.log("My Agent ID"+$rootScope.agentId);
+					console.log("Speciality :"+$rootScope.agentSpeciality);
 					//add connection to server
+
 					var data1={
-						conversationInfo: conversation.contact
+						
 						// name:$scope.user.name,
-						// speciality:$scope.selectedSpeciality.name
-					  };
+						speciality: $rootScope.agentSpeciality,
+						email: $rootScope.customerEmail,
+						agent_id: $rootScope.agentId
+						 };
 					 
 					  var post_message={
 						type: 'POST',

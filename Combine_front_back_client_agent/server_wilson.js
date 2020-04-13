@@ -6,7 +6,7 @@ const bodyParser = require("body-parser");
 const RainbowSDK = require("rainbow-node-sdk");
 const configure = require("./configuration");
 const rainbowsdk = new RainbowSDK(configure.options);
-
+const users = require("./users");
 const Agent= require('./Agent.js');
 const list_of_queues = require("./create_queue_dict");
 const all_agent= require('./AllAgents.js')
@@ -14,6 +14,7 @@ const port = 8080;
 const client_port= 3007;
 const events = require("events")
 event_emit= new events();
+
 let Agent_class= new all_agent();
 let all_specialities_queues = list_of_queues.all_queues;
 var cors = require('cors')
@@ -26,18 +27,22 @@ client.use(cors())
 client.use(bodyParser.urlencoded({extended: false}));
 client.use(bodyParser.json());
 client.use(express.static('Client'))
-
-function matchAgent(speciality, user){
-    console.log("Match agent is called")
+function matchAgent(speciality){
+    console.log("Match agent is called for "+speciality.toString())
     //Todo match the agent and send the data to the front end. through SSE
-    user.speciality=speciality
-    let agent = Agent_class.getTheMostAvailableAgent(speciality)
+    let agent = Agent_class.getTheMostAvailableAgent(speciality.toString())
+    let queue= all_specialities_queues[speciality.toString()]
+    console.log("queue size" +queue.size())
     if(agent!=null){
-        data= agent.dequeue(all_specialities_queues[speciality])
+        var data_1= agent.dequeue(queue)
+        console.log(typeof(data_1))
+        console.log("queue size" +queue.size())
+        console.log("Matched and sending SSE " +data_1.email)
+        event_emit.emit("new_customer",data_1)
         
-            
-        event_emit.emit("new_customer",user)
-        
+    }
+    else{
+        console.log("There is no available Agent ")
     }
 }
 
@@ -67,7 +72,6 @@ rainbowsdk.events.on('rainbow_onready', () => {
         console.log("SSE---SSE---SSE");
         event_emit.on("new_customer",(thedata)=>{
             console.log("new cutomer event !")
-            console.log(thedata.customer)
             res.write(`data: ${JSON.stringify(thedata)} \n\n`);
             
         })
@@ -85,7 +89,8 @@ rainbowsdk.events.on('rainbow_onready', () => {
         var msg= {status:"Successful"}
         let agent = new Agent(speciality.toString())
         Agent_class.addAgent(agent)
-        console.log("Now we have slot : "+all_specialities_queues[speciality.toString()].emptyslots())
+
+        console.log(speciality.toString()+" Now we have slot : "+all_specialities_queues[speciality.toString()].emptyslots())
         msg.agent_id= agent.getid();
         res.status(200).send(msg)
     })
@@ -140,18 +145,18 @@ rainbowsdk.events.on('rainbow_onready', () => {
         res.status(200).json(result_queue);
         console.log(result_queue);
     })
-
-
     app.post('/endconversation', (req, res) => {
-        let post_data= JSON.parse(req.body)
+        let post_data= JSON.parse(JSON.stringify(req.body))
         let user_email = post_data.email;
         let speciality = post_data.speciality;
-        let agent_id= post_data.agent_id;
-        let agent= Agent_class.get_agent(agent_id);
+        let agent_id= parseInt(post_data.agent_id.toString());
+        console.log("End conversation Requestion from Agent ID :" + agent_id+" With speciality: "+speciality.toString())
+        let agent= Agent_class.getOneAgent(speciality.toString(), 1);
         agent.end_conversation(user_email)
         queue = all_specialities_queues[speciality.toString()]
         rainbowsdk.admin.getAllUsers().then((user) => {
             let found_user = false;
+            let user_id='';
             for (let i = 0; i < user.length; i++) {
                 if (user[i].loginEmail == user_email.toString()) {
                     user_id += user[i].id;
@@ -166,18 +171,17 @@ rainbowsdk.events.on('rainbow_onready', () => {
                     throw err;
                 })
             } else {
-                console.log("Fail")
+                console.log("Delete users "+user_id.toString+"Fail")
             }
         }).catch((err) => {
             throw err;
         })
         
-    let user_detial= agent.dequeue(queue)
-    if(user_detial!=NaN){
-        user_detial.status='Success'
-        res.send(user_detial)
+    if(!queue.isEmpty()){
+        console.log("Specialty "+speciality.toString()+"Is not empty Match agent agin ")
+        matchAgent(speciality);
     }
-    })
+})
     client.get('/getUserAccount', (req, res) => {
         let speciality = req.query.speciality;
         let queue_slot_available = false;
@@ -195,45 +199,45 @@ rainbowsdk.events.on('rainbow_onready', () => {
         if (queue_slot_available === true) {
             var hashcoode=(+new Date).toString(36)
             var emaildetail  = hashcoode+"@someemail.com";  
-            let normalAcc = {status: "Success",email: emaildetail, password: paswd,FirstName: first_name+hashcoode};
+            let normalAcc = {status: "Success", email: emaildetail, password: paswd,FirstName: first_name+hashcoode};
 
             rainbowsdk.admin.createUserInCompany(emaildetail, paswd ,first_name+hashcoode,last_name).then((user) => {
                 console.log("Account successfully created!");
 
                 /* enqueue the created account to the correspond speciality queue */
-                normalAcc.speciality=speciality.toString();
+                
                 console.log(all_specialities_queues[speciality.toString()].emptyslots());
                 console.log("The queue is empty : "+ all_specialities_queues[speciality.toString()].isEmpty() )
-
+                normalAcc.speciality=speciality.toString()
+                console.log("The email " +normalAcc.email)
                 if(all_specialities_queues[speciality.toString()].enqueue(normalAcc)){
 
                 console.log("Queue latest status: ", all_specialities_queues);
                 res.status(200).json(normalAcc);
                 }
-                else{
-                    console.log("create account fails")
-                }
-
+            
+                
                 if(all_specialities_queues[speciality.toString()].size()==1){
-
-       
                     //try assign to the most available agent . 
-                    matchAgent(speciality.toString(),normalAcc)
+                    matchAgent(speciality.toString())
                 }
             }).catch((err) => {
+                console.log("Create Account "+first_name+" failed")
                 normalAcc = {status: "Fail",};
-                res.send(JSON.stringify(normalAcc))
+                res.status(505)
                 throw err;
             })
             
         }
           
        else {
+           console.log("Queue is full, no slot ")
            normalAcc = {status: "Fail",};
            res.send(JSON.stringify(normalAcc))
         }
     })
 })
+
 app.listen(port, () => {
     console.log("The server is running now!");
 });

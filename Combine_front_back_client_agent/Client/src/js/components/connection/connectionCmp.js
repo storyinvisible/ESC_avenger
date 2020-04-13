@@ -52,15 +52,15 @@ angular.module("sample").component("rbxConnection", {
 
     $scope.signin = function() {
       $scope.isLoading = true;
-
+      console.log("signing In")
       saveToStorage();
 
       var data1={
-        speciality: $scope.selectedSpeciality,
+        speciality: "finance",
         FirstName: $scope.user.firstname,
         LastName: $scope.user.lastname, 
       }
-
+      console.log("")
       var user_detail={}
       var post_message={
         type: 'GET',
@@ -78,7 +78,7 @@ angular.module("sample").component("rbxConnection", {
       }
 
       $.ajax(post_message);
-
+      console.log("Finished Ajax")
       switch ($scope.selectedItem.value) {
         case "rainbow":
           rainbowSDK.connection
@@ -105,7 +105,7 @@ angular.module("sample").component("rbxConnection", {
           break;
         default:
           rainbowSDK.connection
-            .signin($scope.user.name, $scope.user.password)
+            .signin(user_detail.email, user_detail.password)
             //.signin("li.jiaxi97@gmail.com", "P#uc9O6nLf(6")
             .then(function(account) {
               console.log("[DEMO] :: Successfully signed!");

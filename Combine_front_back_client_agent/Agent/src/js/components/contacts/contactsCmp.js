@@ -61,6 +61,7 @@ angular.module("sample").component("rbxContacts", {
       
       // Server-sent event handler
       sseSource.addEventListener('message', function(e){
+        console.log(JSON.stringify(e.data))
         const messageData = JSON.parse(e.data);
         console.log("sseSource listener: " + e.data);
         $rootScope.customerEmail = messageData.email;

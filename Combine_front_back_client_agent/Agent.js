@@ -19,14 +19,19 @@ class Agent{
     dequeue(queue){
         if(this.status=='available'&&this.capacity>0){
             var user_detail= queue.dequeue();
-            this.current_user.set(user_detail.email, user_detail.name)
+            console.log("ADD user email" +user_detail.email)
+            this.current_user.set(user_detail.email, user_detail.FirstName)
             this.capacity=this.limit-this.current_user.size;
-            return this.user_detail
+            return user_detail
+        }
+        else{
+            return null
         }  
     }
     end_conversation(email){
         this.current_user.delete(email)
         this.capacity=this.capacity+1;
+        console.log("Agent "+this.id+"has ended Conversation with "+email)
     }
     check_capacity(){
         if (this.status!="available"){
