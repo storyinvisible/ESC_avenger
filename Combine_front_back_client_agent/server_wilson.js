@@ -6,11 +6,7 @@ const bodyParser = require("body-parser");
 const RainbowSDK = require("rainbow-node-sdk");
 const configure = require("./configuration");
 const rainbowsdk = new RainbowSDK(configure.options);
-<<<<<<< HEAD
-//const users = require("./users");
-=======
 
->>>>>>> b575151b6bbf2465c349cc67c9a8fd3ea6a64b08
 const Agent= require('./Agent.js');
 const list_of_queues = require("./create_queue_dict");
 const all_agent= require('./AllAgents.js')
@@ -208,11 +204,7 @@ rainbowsdk.events.on('rainbow_onready', () => {
                 normalAcc.speciality=speciality.toString();
                 console.log(all_specialities_queues[speciality.toString()].emptyslots());
                 console.log("The queue is empty : "+ all_specialities_queues[speciality.toString()].isEmpty() )
-<<<<<<< HEAD
 
-=======
-                
->>>>>>> b575151b6bbf2465c349cc67c9a8fd3ea6a64b08
                 if(all_specialities_queues[speciality.toString()].enqueue(normalAcc)){
 
                 console.log("Queue latest status: ", all_specialities_queues);
@@ -221,11 +213,10 @@ rainbowsdk.events.on('rainbow_onready', () => {
                 else{
                     console.log("create account fails")
                 }
-<<<<<<< HEAD
+
                 if(all_specialities_queues[speciality.toString()].size()==1){
-=======
-                if(all_specialities_queues[speciality.toString()].isEmpty()){
->>>>>>> b575151b6bbf2465c349cc67c9a8fd3ea6a64b08
+
+       
                     //try assign to the most available agent . 
                     matchAgent(speciality.toString(),normalAcc)
                 }
