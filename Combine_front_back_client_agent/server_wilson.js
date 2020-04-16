@@ -35,8 +35,9 @@ function matchAgent(speciality){
     console.log("queue size" +queue.size())
     if(agent!=null){
         var data_1= agent.dequeue(queue)
+        data_1.agent_id=agent.getid();
         console.log(typeof(data_1))
-        console.log("queue size" +queue.size())
+        console.log("queue size " +queue.size())
         console.log("Matched and sending SSE " +data_1.email)
         event_emit.emit("new_customer",data_1)
         
@@ -95,11 +96,14 @@ rainbowsdk.events.on('rainbow_onready', () => {
         res.status(200).send(msg)
     })
     app.post('/AgentLogout', function(req,res) {
+        
         let recv = JSON.parse(JSON.stringify(req.body));
         let speciality= recv.speciality;
         let agent_id = recv.agent_id
+        let queue= all_specialities_queues[speciality.toString()]
         try{
             Agent_class.removeAgent(speciality.toString, parseInt(agent_id))
+            queue.addLimit(-1)
             res.send({status:"Sucessful"})
             
         }catch(err){
@@ -203,7 +207,7 @@ rainbowsdk.events.on('rainbow_onready', () => {
 
             rainbowsdk.admin.createUserInCompany(emaildetail, paswd ,first_name+hashcoode,last_name).then((user) => {
                 console.log("Account successfully created!");
-
+                normalAcc.user_id=user.id;
                 /* enqueue the created account to the correspond speciality queue */
                 
                 console.log(all_specialities_queues[speciality.toString()].emptyslots());
