@@ -56,7 +56,7 @@ angular.module("sample").component("rbxConnection", {
       saveToStorage();
 
       var data1={
-        speciality: "finance",
+        speciality: $scope.selectedSpeciality.value,
         FirstName: $scope.user.firstname,
         LastName: $scope.user.lastname, 
       }
