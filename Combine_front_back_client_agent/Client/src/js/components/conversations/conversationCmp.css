@@ -2,9 +2,10 @@ div.conversationCmp-area {
     position: relative;
     overflow: hidden;
     border: 10px solid #E9E9E9;
-    width: 700px;
+    width: 780px;
     height: auto;
-    margin-top: 30px;
+    margin-top: 5px;
+    margin-left: 5x;
     margin-right: 70px;
     background: #fff;
 }
@@ -52,7 +53,7 @@ div.conversationCmp-messages {
 .conversationCmp-editor {
     margin: 10px 8px 5px 8px;
     font-size: 15px;
-    width: 670px;
+    width: 750px;
     height: 25px;
     padding: 5px;
     border: 1px solid rgba(73, 98, 171, 0.22);
