@@ -93,6 +93,7 @@ angular.module("sample").component("rbxConnection", {
               console.log("[DEMO] :: Error when sign-in", err);
               $scope.isLoading = false;
               $scope.isConnected = false;
+              alert("Sorry, no available agent now. Please come back later!");
             });
           $scope.createConversation = function() {
               rainbowSDK.conversations.openConversationForContact($scope.$ctrl.item)
@@ -100,6 +101,7 @@ angular.module("sample").component("rbxConnection", {
                 console.log("**************Create coversation when connecting")
               }).catch(function() {
                 console.log("ERROR");
+                alert("Sorry, no available agent now. Please come back later!");
               });
             };
           break;
@@ -116,6 +118,7 @@ angular.module("sample").component("rbxConnection", {
               console.log("[DEMO] :: Error when sign-in", err);
               $scope.isLoading = false;
               $scope.isConnected = false;
+              alert("Sorry, no available agent now. Please come back later!");
             });
           break;
       }
