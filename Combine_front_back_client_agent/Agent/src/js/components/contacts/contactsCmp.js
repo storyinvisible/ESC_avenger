@@ -14,28 +14,7 @@ angular.module("sample").component("rbxContacts", {
     var sseSource = new EventSource('/new_customer');
 
     var newCustomer;
-    var initiatetheConversation= function(user_id){
-      console.log("Getting Users ")
-      var users = rainbowSDK.contacts.getAll()
-      console.log("number of users "+users.length)s
-      for(var thisuser in users){
-        console.log(thisuser)
-        if(thisuser.id==user_id){
-          
-          // At least one user has been found
-          
-              // Do something with each contact returned
-            console.log("Jessie, contact found");
-            rainbowSDK.conversations.openConversationForContact(users).then(function(conversation){
-              rainbowSDK.im.sendMessageToConversation(conversation, "Hello, I'm your agent!");
-              
-              rainbowSDK.im.sendMessageToConversation(conversation, "My name is Jessie");
-              console.log("Message sent!!!!")
-            })
-          }
-        } 
 
-    }
     this.$onInit = function() {
       var ctrl = $scope;
       $scope.isConnectedUser = false;
@@ -91,57 +70,76 @@ angular.module("sample").component("rbxContacts", {
         //newCustomers.push(messageData);
         console.log("sseSource listener: " + messageData.FirstName);
         newCustomer = messageData.FirstName;
-        var contact = messageData.Contact;
-        console.log("Contact id from contact object"+contact.id)
-        var id= messageData.user_id.toString();
+        let userid = messageData.user_id;
         if (e.data != {}){
-          console.log("Jessie: send message automatically to : " + newCustomer);
-          console.log("Jessie: send message automatically to : " + id);
-          rainbowSDK.presence.setPresenceTo(
-            rainbowSDK.presence.RAINBOW_PRESENCE_ONLINE
-          )
-          var contacts = rainbowSDK.contacts.getContactById(id);
-          initiatetheConversation(id);
-          console.log(contacts)
-          rainbowSDK.conversations.openConversationForContact(contacts).then(function(conversation){
+          var this_customer=  rainbowSDK.contacts.getContactById(userid)
+          console.log("This customer "+this_customer)
+          rainbowSDK.conversations.openConversationForContact(this_customer).then(function(conversation){
             rainbowSDK.im.sendMessageToConversation(conversation, "Hello, I'm your agent!");
             
             rainbowSDK.im.sendMessageToConversation(conversation, "My name is Jessie");
             console.log("Message sent!!!!")
           })
+        
           
+          console.log("Jessie: searching for  : " + userid);
+          rainbowSDK.contacts.searchById(userid).then(function(usersFound) {
+            console.log("Jessie, contact found");
+            rainbowSDK.conversations.openConversationForContact(usersFound).then(function(conversation){
+              rainbowSDK.im.sendMessageToConversation(conversation, "Hello, I'm your agent!");
+              
+              rainbowSDK.im.sendMessageToConversation(conversation, "My name is Jessie");
+              console.log("Message sent!!!!")
+            })
+                    
+                    //newCustomers.pop(newCustomers[i]);
+              
+            
+        
+          }).catch((err) =>{
+            throw err;
+          });
         }
       });
 
       $scope.sendMessage = function() {
-        // for (i=0; i<newCustomers.length; i++){
-        //   const name = newCustomers[i].customer.first_name;
-        //   console.log("Jessie, send message: " + name);
-          console.log("Jessie: sending message to : " + newCustomer);
-          rainbowSDK.contacts.searchByName(newCustomer, 1).then(function(usersFound) {
-            console.log("Starting searching for the users ")
-            if(usersFound.length > 0) {
-                // At least one user has been found
-                usersFound.forEach(function(user) {
-                    // Do something with each contact returned
-                    console.log("Jessie, contact found");
-                    rainbowSDK.conversations.openConversationForContact(user).then(function(conversation){
-                      rainbowSDK.im.sendMessageToConversation(conversation, "Hello, I'm your agent!");
-                      
-                      rainbowSDK.im.sendMessageToConversation(conversation, "My name is Jessie");
-                      console.log("Message sent!!!!")
-                    })
+        var data1={
+          speciality:$rootScope.agentSpeciality,
+          agent_id:$rootScope.agentId
+    
+      }
+      
+      var user_detail={}
+      var post_message={
+          type: 'POST',
+          data: JSON.stringify(data1),
+          contentType: 'application/json',
+          url:'http://localhost:8080/dequeue',
+          async: false,
+          dataType: 'json',
+          };
+      var user_detail={}
+      post_message.success = function(data){
+        console.log("Sucess");
+        console.log(JSON.stringify(data));
+        user_detail=data;
+      }
+      
+      $.ajax(post_message)
+      let user_id= user_detail.user_id
+          rainbowSDK.contacts.searchById(user_id).then(function(usersFound) {
+    
+            rainbowSDK.conversations.openConversationForContact(usersFound).then(function(conversation){
+              rainbowSDK.im.sendMessageToConversation(conversation, "Hello, I'm your agent!");
+              
+              rainbowSDK.im.sendMessageToConversation(conversation, "My name is Jessie");
+              console.log("Message sent!!!!")
+            })
                     
                     //newCustomers.pop(newCustomers[i]);
-                });
-            }
-            else {
-                // No contact returned
-                
-                console.log("Jessie, no contact found")
-            }
+               
+          
           }).catch((err) =>{
-            console.log("The contact is not found , contact search fail to carryout ")
             throw err;
           });
         }
