@@ -2,9 +2,8 @@
 let options =  {
     "rainbow": {
         //        "host": "official",                      // Can be "sandbox" (developer platform), "official" or any other hostname when using dedicated AIO
-                "host": "sandbox"                     // Can be "sandbox" (developer platform), "official" or any other hostname when using dedicated AIO
-               
-            },
+                "host": "sandbox"                      // Can be "sandbox" (developer platform), "official" or any other hostname when using dedicated AIO
+    },
     "credentials": {
         "login": "storyinvisible@gmail.com",  // The Rainbow email account to use
         "password": "ux=.Iz<wTy'0"   // The Rainbow associated password to use
