@@ -62,10 +62,26 @@ public class Web_strain_test {
             client_thread.add(browser_client);
             browser_client.start();
         }
-        for(Browser_agent thread : threads){
-            System.out.println("Trying Signing Out");
-            thread.signout();
+        try {
+            Thread.sleep(25000);
+        }catch (InterruptedException e){
+            e.printStackTrace();
         }
+
+        while (threads.size()!=0){
+            for(int i =0; i<threads.size();i++){
+                if(!threads.get(i).sendMsg()){
+                    threads.get(i).signout();
+                    threads.get(i).interrupt();
+                    threads.remove(i);
+
+                    break;
+                }
+            }
+        }
+
+
+
 
     }
     public static String[] generateRandomWords(int numberOfWords)
@@ -98,9 +114,17 @@ class Browser_client extends Thread{
         driver.get("http://127.0.0.1:3007");
         WebElement username = driver.findElement(By.id("username"));
         Random random = new Random();
-        username.sendKeys(Web_strain_test.generateRandomWords(3+random.nextInt(5)));
+        username.sendKeys(Web_strain_test.generateRandomWords(1));
         WebElement password = driver.findElement(By.id("password"));
-        password.sendKeys(Web_strain_test.generateRandomWords(3+random.nextInt(5)));
+        password.sendKeys(Web_strain_test.generateRandomWords(1));
+        WebElement loginButton = driver.findElement(By.className("connectionCmp-btn"));
+        try {
+            Thread.sleep(5000);
+        }catch (InterruptedException e){
+            e.printStackTrace();
+        }
+
+        loginButton.click();
 
     }
     public void quit(){
@@ -139,10 +163,24 @@ class Browser_agent extends Thread{
     public void signout(){
         WebElement logoutButton = driver.findElement(By.id("sign_out"));
         logoutButton.click();
+        driver.close();
+        driver.quit();
     }
-    public void sendMsg(){
-        WebElement messageField = driver.findElement(By.id("messageField"));
-        messageField.sendKeys(Web_strain_test.generateRandomWords(3+random.nextInt(5)));
+    public boolean sendMsg(){
+        List<WebElement> messageField = driver.findElements(By.id("messageField"));
+        if(!messageField.isEmpty()){
+            messageField.get(0).sendKeys(Web_strain_test.generateRandomWords(3+random.nextInt(5)));
+            try {
+                Thread.sleep(1500);
+            }catch (InterruptedException e){}
+            WebElement clseConversation= driver.findElement(By.id("close_conversation"));
+            clseConversation.click();
+            return true;
+
+        }
+        else {
+            return false;
+        }
 
     }
 
