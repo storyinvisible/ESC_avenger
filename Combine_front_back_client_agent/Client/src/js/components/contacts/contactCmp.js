@@ -25,29 +25,7 @@ angular.module('sample').component('rbxContact', {
 				rainbowSDK.conversations.closeConversation($scope.$ctrl.item.conversation).then(function(conversation) {
 					console.log("Jessie, closeConversation");
 					//add connection to server
-					var data1={
-						conversationInfo: conversation.contact,
-						name:$scope.user.name,
-						speciality:$scope.selectedSpeciality.name
-					  };
-					 
-					  var post_message={
-						type: 'POST',
-						//data: JSON.stringify($scope.selectedSpeciality.name),
-						data: JSON.stringify(data1),
-						contentType: 'application/json',
-						url:'http://localhost:8080/endconversation',
-						async: false,
-						dataType: 'json',
-						};
-					  var user_detail={}
-					  post_message.success = function(data){
-						console.log("Jessie, Success");
-						console.log(JSON.stringify(data));
-						user_detail=data;
-					  }
-					 
-					  $.ajax(post_message)
+					
 				}).catch(function() {
 					console.log("ERROR");
 				});

@@ -11,7 +11,6 @@ angular.module("sample").component("rbxContacts", {
 
     var listeners = [];
 
-    var sseSource = new EventSource('/new_customer');
 
     var newCustomers = [];
 
@@ -60,12 +59,7 @@ angular.module("sample").component("rbxContacts", {
       );
       
       // Server-sent event handler
-      sseSource.addEventListener('message', function(e){
-        const messageData = JSON.parse(JSON.stringify(e));
-        console.log("sseSource listener: " + e.data);
-        //newCustomers.push(messageData);
-        console.log("sseSource listener: " + messageData.customer);
-      });
+
 
       $scope.sendMessage = function() {
         // for (i=0; i<newCustomers.length; i++){
