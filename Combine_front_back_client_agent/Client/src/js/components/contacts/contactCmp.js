@@ -26,9 +26,9 @@ angular.module('sample').component('rbxContact', {
 					console.log("Jessie, closeConversation");
 					//add connection to server
 					var data1={
-						conversationInfo: conversation.contact
-						// name:$scope.user.name,
-						// speciality:$scope.selectedSpeciality.name
+						conversationInfo: conversation.contact,
+						name:$scope.user.name,
+						speciality:$scope.selectedSpeciality.name
 					  };
 					 
 					  var post_message={

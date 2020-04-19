@@ -8,7 +8,6 @@ const guest_user = require("./guest_names_generator");
 const port = 8080;
 const Queue= require("./Queue.js")
 var queue = new Queue();
-
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "127.0.0.1:8080"); // update to match the domain you will make the request from
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -95,7 +94,7 @@ var post_message={
     type: 'GET',
     data: data1,
     contentType: 'application/json',
-    url:'http://localhost:3007/getUserAccount',
+    url:'http://localhost:8080/getUserAccount',
     async: false,
     dataType: 'json',
     };
@@ -107,33 +106,6 @@ post_message.success = function(data){
 }
 
 $.ajax(post_message)*/
-
-
-/*var data1={
-    FirstName: "Huang",
-    LastName: "Zhibo", 
-  	speciality:"finance"
-}
-
-var user_detail={}
-var post_message={
-    type: 'GET',
-    data: data1,
-    contentType: 'application/json',
-    url:'http://localhost:8080/deleteAccount',
-    async: false,
-    dataType: 'json',
-    };
-var user_detail={}
-post_message.success = function(data){
-  console.log("Sucess");
-  console.log(JSON.stringify(data));
-  user_detail=data;
-}
-
-$.ajax(post_message)*/
-
-
 var data1={
  
   	speciality:"finance"
@@ -179,3 +151,28 @@ $.ajax(post_message)
 //}
 //
 //$.ajax{post_message}
+var data1={
+    FirstName: "Huang",
+    LastName: "Zhibo", 
+   speciality:"finance",
+   email:"k8qmo0xl@someemail.com",
+  agent_id:1
+}
+
+var user_detail={}
+var post_message={
+    type: 'POST',
+    data: JSON.stringify(data1),
+    contentType: 'application/json',
+    url:'http://localhost:3007/endconversation',
+    async: false,
+    dataType: 'json',
+    };
+var user_detail={}
+post_message.success = function(data){
+  console.log("Sucess");
+  console.log(JSON.stringify(data));
+  user_detail=data;
+}
+
+$.ajax(post_message)

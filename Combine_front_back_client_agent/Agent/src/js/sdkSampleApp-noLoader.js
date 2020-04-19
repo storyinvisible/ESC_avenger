@@ -12,8 +12,8 @@ sample.controller("sampleController", [
 
     console.log("[DEMO] :: Rainbow IM Application");
 
-    var appId = "e78b583059f511eabf7e77d14e87b936";
-    var appSecret = "U3LdMSRdTzkjDbCkKajXWSQj3URPO5EfQStjACIVQLHsc45WQOc6v0dpWxusgSnv";
+    var appId = "d27e33505e1d11ea9a6dcf004cf8c14e";
+    var appSecret = "RD4HZLgHYqnGgLtblElkeFB4bjS0mcRB6xy5vTNPl6gOlzunAEvzCukld5pEuwma";
 
     var onReady = function onReady() {
       console.log("[DEMO] :: Rainbow SDK is ready!");

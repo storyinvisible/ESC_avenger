@@ -1,10 +1,10 @@
 .messageCmp-content {
-	font-size: 10px;
+	font-size: 15px;
 }
 
 .messageCmp-timestamp {
 	margin-top: 8px;
-	font-size: 9px;
+	font-size: 10px;
 }
 
 .messageCmp-area-L {
@@ -12,8 +12,8 @@
     color: #fff;
     max-width: 66%;
     border-radius: 4px;
-    padding: 4px;
-    margin-bottom: 10px;
+    padding: 10px;
+    margin-bottom: 20px;
 }
 
 .messageCmp-area-R {
@@ -21,8 +21,8 @@
 	color: #46464a;
     max-width: 66%;
     border-radius: 4px;
-    padding: 4px;
-    margin-bottom: 10px;
+    padding: 10px;
+    margin-bottom: 20px;
     margin-left:auto; 
     margin-right:0;
 }

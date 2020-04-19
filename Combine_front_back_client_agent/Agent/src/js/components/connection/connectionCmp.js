@@ -48,7 +48,7 @@ angular.module("sample").component("rbxConnection", {
 
     $scope.selectedItem = $scope.hosts[0];
     $scope.selectedSpeciality = $scope.specialities[0];
-    $rootScope.agentSpeciality = $scope.selectedSpeciality;
+    //$rootScope.agentSpeciality = $scope.selectedSpeciality;
 
     var handlers = [];
 
@@ -121,7 +121,7 @@ angular.module("sample").component("rbxConnection", {
               agent_detail=data;
               $rootScope.agentId = data.agent_id;
             }
-           
+            $rootScope.agentSpeciality = $scope.selectedSpeciality.value
             $.ajax(post_message)
           break;
       }
@@ -129,6 +129,31 @@ angular.module("sample").component("rbxConnection", {
 
     $scope.signout = function() {
       $scope.isLoading = true;
+      var data1={
+        // name:$scope.user.name,
+        speciality:$rootScope.agentSpeciality,
+        agent_id:$rootScope.agentId
+
+      }
+     
+      var post_message={
+        type: 'POST',
+        //data: JSON.stringify($scope.selectedSpeciality.name),
+        data: JSON.stringify(data1),
+        contentType: 'application/json',
+        url:'http://localhost:8080/AgentLogout',
+        async: false,
+        dataType: 'json',
+        };
+      var agent_detail={}
+      post_message.success = function(data){
+        console.log("Jessie, Success");
+        console.log(JSON.stringify(data));
+        agent_detail=data;
+        $rootScope.agentId = data.agent_id;
+      }
+      $rootScope.agentSpeciality = $scope.selectedSpeciality.value
+      $.ajax(post_message)
       rainbowSDK.connection.signout().then(function() {
         $scope.isLoading = false;
         $scope.isConnected = false;

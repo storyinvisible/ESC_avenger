@@ -18,9 +18,7 @@ class AllAgents {
         this.agent_count++;
         agent.setid(this.agent_count)
         let speciality= agent.getSpeciality()
-        console.log("before assignation")
         this.all_agents[speciality][this.agent_count] = agent;
-        console.log("after assignation")
         return this.agent_count
 
     }
@@ -30,9 +28,20 @@ class AllAgents {
     }
 
     getOneAgent(speciality, id) {
-        return this.all_agents[speciality][id];
+        console.log("The acquired Agent speciality :"+ speciality+"Agent ID"+id)
+        return this.all_agents[speciality][1];
     }
+    availableAgent(speciality){
+        let available=0;
+        let this_spec = this.all_agents[speciality];
+        for (let id in this_spec) {
+            if(this.all_agents[speciality][id].check_capacity()!=0){
+                available++;
+            }
+        }
+        return available;
 
+    }
     getAllAgents() {
         return this.all_agents;
     }
@@ -52,7 +61,7 @@ class AllAgents {
             }
         }
         if (max=0) {
-            return 0;
+            return null;
         }
         return most_available
     }
