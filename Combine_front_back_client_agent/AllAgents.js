@@ -28,8 +28,8 @@ class AllAgents {
     }
 
     getOneAgent(speciality, id) {
-        console.log("The acquired Agent speciality :"+ speciality+"Agent ID"+id)
-        return this.all_agents[speciality][1];
+        console.log("The acquired agent speciality: "+ speciality + " agent ID: "+id)
+        return this.all_agents[speciality][id];
     }
     availableAgent(speciality){
         let available=0;

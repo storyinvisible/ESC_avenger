@@ -8,15 +8,15 @@
     margin-left: 250px;
     height: 780px;
     width: 800px;
-    border: 5px solid black;
+    border: 5px solid #d4d9ea;
     z-index: 9999;
-    background-color: black;
+    background-color: #fbfbfb;
 }
 
 .app-background::before {
-    content: "DevStar Travel Support Channel";
+    content: "Avenger Support Channel";
     text-align: center;
-    font-size: 35px;
+    font-size: 30px;
     color: white;
     display: block;
     width: 100%;
@@ -27,7 +27,7 @@
 
 .app-background::after {
     content: "Please wait while our agent preparing to serve you...";
-    color: #f1f1f1;
+    color: #656565;
     overflow-y: hidden;
     height: 50px;
     max-height: 50px;

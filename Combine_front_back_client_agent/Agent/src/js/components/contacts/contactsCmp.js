@@ -64,14 +64,19 @@ angular.module("sample").component("rbxContacts", {
         console.log(JSON.stringify(e.data))
         const messageData = JSON.parse(e.data);
         console.log("sseSource listener: " + e.data);
-        $rootScope.customerEmail = messageData.email;
-        console.log("Share data customer email: " + $rootScope.customerEmail)
-        console.log("sseSource listener: customer email is: " + messageData.email)
+        
+        console.log("Share data customer email: " + $rootScope.customerEmail);
+        console.log("SSE listener: new customer email: " + messageData.email);
+
         //newCustomers.push(messageData);
         console.log("sseSource listener: " + messageData.FirstName);
         newCustomer = messageData.FirstName;
         let userid = messageData.user_id;
-        if (e.data != {}){
+        if (e.data != {} && ($rootScope.agentId ==  messageData.agent_id)){
+          console.log("Agent ID matched!")
+          $rootScope.customerEmail = messageData.email;
+          console.log("$rootScope.customerEmail changed! Changed to: " + $rootScope.customerEmail);
+          console.log("sseSource listener: customer email is: " + messageData.email)
           var this_customer=  rainbowSDK.contacts.getContactById(userid)
           console.log("This customer "+this_customer)
           rainbowSDK.conversations.openConversationForContact(this_customer).then(function(conversation){
@@ -88,7 +93,6 @@ angular.module("sample").component("rbxContacts", {
             rainbowSDK.conversations.openConversationForContact(usersFound).then(function(conversation){
               rainbowSDK.im.sendMessageToConversation(conversation, "Hello, I'm your agent!");
               
-              rainbowSDK.im.sendMessageToConversation(conversation, "My name is Jessie");
               console.log("Message sent!!!!")
             })
                     
@@ -126,22 +130,8 @@ angular.module("sample").component("rbxContacts", {
       }
       
       $.ajax(post_message)
-      let user_id= user_detail.user_id
-          rainbowSDK.contacts.searchById(user_id).then(function(usersFound) {
-    
-            rainbowSDK.conversations.openConversationForContact(usersFound).then(function(conversation){
-              rainbowSDK.im.sendMessageToConversation(conversation, "Hello, I'm your agent!");
-              
-              rainbowSDK.im.sendMessageToConversation(conversation, "My name is Jessie");
-              console.log("Message sent!!!!")
-            })
-                    
-                    //newCustomers.pop(newCustomers[i]);
-               
+      
           
-          }).catch((err) =>{
-            throw err;
-          });
         }
         
       // }

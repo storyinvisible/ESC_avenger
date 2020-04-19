@@ -52,7 +52,9 @@ rainbowsdk.events.on('rainbow_onready', () => {
     //     let found_user = false;
     //     let user_id='';
     //     for (let i = 0; i < user.length; i++) {
-    //         if (user[i].loginEmail != "storyinvisible@gmail.com"||user[i].loginEmail !="superman@email.com") {
+    //         if (user[i].loginEmail != "storyinvisible@gmail.com" && user[i].loginEmail !="superman@email.com"
+    //         && users[i].loginEmail != "ironman@email.com" && users[i].loginEmail != "black_window@avenger.com"
+    //         && users[i].loginEmail != "captain_america@avenger.com") {
     //             rainbowsdk.admin.deleteUser(user[i].id).then((user) => {
     //                 console.log("User with id ", user_id.toString(), " is successfully deleted!");
     //             }).catch((err) => {
@@ -118,7 +120,8 @@ rainbowsdk.events.on('rainbow_onready', () => {
         let agent_id = recv.agent_id
         let queue= all_specialities_queues[speciality.toString()]
         try{
-            Agent_class.removeAgent(speciality.toString, parseInt(agent_id))
+            console.log("Agent logout: " + "speciality: " + speciality.toString() + "agent ID: " + parseInt(agent_id));
+            Agent_class.removeAgent(speciality.toString(), parseInt(agent_id))
             queue.addLimit(-1)
             res.send({status:"Sucessful"})
             
@@ -177,8 +180,10 @@ rainbowsdk.events.on('rainbow_onready', () => {
         let user_email = post_data.email;
         let speciality = post_data.speciality;
         let agent_id= parseInt(post_data.agent_id.toString());
-        console.log("End conversation Requestion from Agent ID :" + agent_id+" With speciality: "+speciality.toString())
-        let agent= Agent_class.getOneAgent(speciality.toString(), 1);
+        console.log("End conversation request from agent_id : " + agent_id+" with speciality: "+speciality.toString())
+        console.log("End conversation request for customer with email: " + user_email);
+        let agent= Agent_class.getOneAgent(speciality.toString(), agent_id);
+        console.log("Going to close conversation!\n")
         agent.end_conversation(user_email)
         queue = all_specialities_queues[speciality.toString()]
         rainbowsdk.admin.getAllUsers().then((user) => {
