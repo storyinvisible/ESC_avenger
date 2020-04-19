@@ -34,6 +34,13 @@ function matchAgent(speciality){
     let queue= all_specialities_queues[speciality.toString()]
     console.log("queue size" +queue.size())
     if(agent!=null){
+<<<<<<< HEAD
+        data= agent.dequeue(all_specialities_queues[speciality])
+        
+        if (data!=null){ 
+            event_emit.emit("new_customer",user)
+        }
+=======
         var data_1= agent.dequeue(queue)
         data_1.agent_id=agent.getid();
         console.log(typeof(data_1))
@@ -41,6 +48,7 @@ function matchAgent(speciality){
         console.log("Matched and sending SSE " +data_1.email)
         event_emit.emit("new_customer",data_1)
         
+>>>>>>> 9fc00247cc91082a678108d425175ff5bf9f28bf
     }
     else{
         console.log("There is no available Agent ")
@@ -153,9 +161,15 @@ rainbowsdk.events.on('rainbow_onready', () => {
         let post_data= JSON.parse(JSON.stringify(req.body))
         let user_email = post_data.email;
         let speciality = post_data.speciality;
+<<<<<<< HEAD
+        let agent_id= post_data.agent_id;
+        let agent= Agent_class.get_agent(agent_id);
+        console.log("Speciality recieved: "+speciality);
+=======
         let agent_id= parseInt(post_data.agent_id.toString());
         console.log("End conversation Requestion from Agent ID :" + agent_id+" With speciality: "+speciality.toString())
         let agent= Agent_class.getOneAgent(speciality.toString(), 1);
+>>>>>>> 9fc00247cc91082a678108d425175ff5bf9f28bf
         agent.end_conversation(user_email)
         queue = all_specialities_queues[speciality.toString()]
         rainbowsdk.admin.getAllUsers().then((user) => {

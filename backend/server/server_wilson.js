@@ -245,7 +245,7 @@ rainbowsdk.events.on('rainbow_onready', () => {
             
         }
           
-       else {
+        else {
            normalAcc = {status: "Fail",};
            res.send(JSON.stringify(normalAcc))
         }

@@ -36,23 +36,23 @@ angular.module('sample').component('rbxContact', {
 						agent_id: $rootScope.agentId
 						 };
 					 
-					  var post_message={
-						type: 'POST',
-						//data: JSON.stringify($scope.selectedSpeciality.name),
-						data: JSON.stringify(data1),
-						contentType: 'application/json',
-						url:'http://localhost:8080/endconversation',
-						async: false,
-						dataType: 'json',
-						};
-					  var user_detail={}
-					  post_message.success = function(data){
-						console.log("Jessie, Success");
-						console.log(JSON.stringify(data));
-						user_detail=data;
-					  }
+					//   var post_message={
+					// 	type: 'POST',
+					// 	//data: JSON.stringify($scope.selectedSpeciality.name),
+					// 	data: JSON.stringify(data1),
+					// 	contentType: 'application/json',
+					// 	url:'http://localhost:8080/endconversation',
+					// 	async: false,
+					// 	dataType: 'json',
+					// 	};
+					//   var user_detail={}
+					//   post_message.success = function(data){
+					// 	console.log("Jessie, Success");
+					// 	console.log(JSON.stringify(data));
+					// 	user_detail=data;
+					//   }
 					 
-					  $.ajax(post_message)
+					//   $.ajax(post_message)
 				}).catch(function() {
 					console.log("ERROR");
 				});
