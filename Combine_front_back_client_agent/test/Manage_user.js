@@ -6,13 +6,10 @@ const all_agent= require("../AllAgents.js")
 
 const assert = chai.assert;
 
-
-
 let all_specialities_queues = list_of_queues.all_queues;
 let finance_queue= all_specialities_queues['finance']
 let HR_queue = all_specialities_queues["HR"]
 let Agent_pool = new all_agent()
-
 
 let user_1={ email: "Some1@email",
             name: "Some One",}
@@ -26,8 +23,6 @@ let user_5= { email: "Some4@email",
                 name:"some5 three"}
 let user_6= { email: "Some4@email",
                 name:"some6 three"}
-// TEst for agent and all agent 
-
 
 let Agent1= new agent("finance")
 let Agent2= new agent("finance")
@@ -41,13 +36,88 @@ describe('Empty Queue test', () => {
         assert.isFalse(finance_queue.enqueue(user_1)) // cannot be enqueued 
         
     }) 
-    it("Test all speciality "), function(){
+    it("Test all speciality ", function(){
         for(var queues in all_specialities_queues){
             
-        assert.equal(queues.emptyslots(), 0);// it is empty , but no slot available
-        assert.isFalse(queues.enqueue(user_1)) // cannot be enqueued 
-        }
-    }
+        assert.equal(all_specialities_queues[queues].emptyslots(), 0);// it is empty , but no slot available
+        assert.isFalse(all_specialities_queues[queues].enqueue(user_1)) // cannot be enqueued 
+        }    
+    })
+})
+describe("Agent Pool Test ", function(){
+    it("Add Agent",  function(){
+        let agent1_id= Agent_pool.addAgent(Agent1)
+        assert.equal(agent1_id,1);
+
+        assert.equal(Agent_pool.availableAgent('finance'), 1)
+        let agent2_id= Agent_pool.addAgent(Agent2)
+        let agent3_id= Agent_pool.addAgent(Agent3)
+        assert.equal(Agent_pool.availableAgent('finance'),3)// since  no agent is busy 
+
+    })
+    it("Expand the queue ",function(){
+        finance_queue.addLimit(3)
+        assert.equal(finance_queue.emptyslots(),30);
+    })
+
+    
+})
+describe("Agent Pool Test ", function(){
+    it("Add user to the queue",function(){
+        finance_queue.enqueue(user_1)
+        finance_queue.enqueue(user_2)
+        finance_queue.enqueue(user_3)
+        finance_queue.enqueue(user_4)
+        finance_queue.enqueue(user_5)
+        finance_queue.enqueue(user_6)
+        assert(finance_queue.emptyslots(),24)
+   
+    })
+    it("Agent dequeue", function(){
+        let agent = Agent_pool.getTheMostAvailableAgent('finance')
+        console.log("Agent id : "+agent.getid() )
+        agent.dequeue(finance_queue)
+        assert.equal(finance_queue.emptyslots(),25)
+        let agent2= Agent_pool.getTheMostAvailableAgent('finance')
+        agent2.dequeue(finance_queue)
+        assert.equal(finance_queue.emptyslots(),26)
+        assert.equal(Agent_pool.availableAgent('finance'),1)
+        let agent3 = Agent_pool.getTheMostAvailableAgent("finance")
+        agent3.dequeue(finance_queue)
+        assert.equal(finance_queue.emptyslots(),27)
+        assert.equal(Agent_pool.getTheMostAvailableAgent("finance"),null)
+    })
+    it("Agent end conversation", function(){
+        Agent1.end_conversation(user_1.email)
+        assert.equal(Agent_pool.availableAgent("finance"),1)
+        assert.isFalse(Agent2.end_conversation(user_1.email))// stress test, what if the current email is not the same as the agent serving one 
+        Agent2.end_conversation(user_2.email)
+        assert.equal(Agent_pool.availableAgent("finance"),2 )
+    })
+})
+describe("Edge cases for Queue",function(){
+    it("increase the queue amount then decrease the capacity", function(){
+        finance_queue.enqueue(user_1)
+        finance_queue.enqueue(user_2)
+        finance_queue.enqueue(user_3)
+        finance_queue.enqueue(user_4)
+        finance_queue.enqueue(user_5)
+        finance_queue.enqueue(user_6)
+        finance_queue.enqueue(user_1)
+        finance_queue.enqueue(user_2)
+        finance_queue.enqueue(user_3)
+        finance_queue.enqueue(user_4)
+        finance_queue.enqueue(user_5)
+        finance_queue.enqueue(user_6)
+        assert.equal(finance_queue.emptyslots(),15)
+        finance_queue.addLimit(-2)
+        assert.equal(finance_queue.emptyslots(),-5)
+
+    })
+    it("Try to enqueue beyond capacity",  function(){
+        assert.isFalse(finance_queue.enqueue(user_1))// try dequeue again 
+        assert.equal(finance_queue.emptyslots(),-5)// check emptyslots . 
+    })
 })
 
 // queue.enqueue(user_1)
@@ -125,4 +195,3 @@ describe('Empty Queue test', () => {
 // let available= Agent_pool.getTheMostAvailableAgent("finance")//get most available 
 // console.log("The available capacity" + available.check_capacity())
 // agent_repeat = Agent_pool.getOneAgent("finance", 1)
-

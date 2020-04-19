@@ -102,7 +102,7 @@ rainbowsdk.events.on('rainbow_onready', () => {
         let agent_id = recv.agent_id
         let queue= all_specialities_queues[speciality.toString()]
         try{
-            Agent_class.removeAgent(speciality.toString, parseInt(agent_id))
+            Agent_class.removeAgent(speciality.toString(), parseInt(agent_id))
             queue.addLimit(-1)
             res.send({status:"Sucessful"})
             
@@ -177,14 +177,18 @@ rainbowsdk.events.on('rainbow_onready', () => {
             } else {
                 console.log("Delete users "+user_id.toString+"Fail")
             }
+            if(!queue.isEmpty()){
+                console.log("Specialty "+speciality.toString()+"Is not empty Match agent agin ")
+                matchAgent(speciality);
+            }
+           
+
         }).catch((err) => {
             throw err;
         })
+        console.log("End complete ")
         
-    if(!queue.isEmpty()){
-        console.log("Specialty "+speciality.toString()+"Is not empty Match agent agin ")
-        matchAgent(speciality);
-    }
+    
 })
     client.get('/getUserAccount', (req, res) => {
         let speciality = req.query.speciality;
@@ -209,14 +213,15 @@ rainbowsdk.events.on('rainbow_onready', () => {
                 console.log("Account successfully created!");
                 normalAcc.user_id=user.id;
                 /* enqueue the created account to the correspond speciality queue */
-                
                 console.log(all_specialities_queues[speciality.toString()].emptyslots());
                 console.log("The queue is empty : "+ all_specialities_queues[speciality.toString()].isEmpty() )
                 normalAcc.speciality=speciality.toString()
                 console.log("The email " +normalAcc.email)
                 if(all_specialities_queues[speciality.toString()].enqueue(normalAcc)){
-
+                normalAcc.Contact= user;
+               
                 console.log("Queue latest status: ", all_specialities_queues);
+
                 res.status(200).json(normalAcc);
                 }
             

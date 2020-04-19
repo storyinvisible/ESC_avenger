@@ -29,9 +29,16 @@ class Agent{
         }  
     }
     end_conversation(email){
-        this.current_user.delete(email)
-        this.capacity=this.capacity+1;
-        console.log("Agent "+this.id+"has ended Conversation with "+email)
+        if(this.current_user.has(email)){
+            this.current_user.delete(email)
+            this.capacity=this.capacity+1;
+            console.log("Agent "+this.id+"has ended Conversation with "+email)
+            return true
+        }
+        else{
+            console.log("The email is not the customer who is serving")
+            return false
+        }
     }
     check_capacity(){
         if (this.status!="available"){
