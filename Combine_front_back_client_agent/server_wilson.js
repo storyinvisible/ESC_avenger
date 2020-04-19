@@ -35,9 +35,9 @@ function matchAgent(speciality, user){
     if(agent!=null){
         data= agent.dequeue(all_specialities_queues[speciality])
         
-            
-        event_emit.emit("new_customer",user)
-        
+        if (data!=null){ 
+            event_emit.emit("new_customer",user)
+        }
     }
 }
 
@@ -148,6 +148,7 @@ rainbowsdk.events.on('rainbow_onready', () => {
         let speciality = post_data.speciality;
         let agent_id= post_data.agent_id;
         let agent= Agent_class.get_agent(agent_id);
+        console.log("Speciality recieved: "+speciality);
         agent.end_conversation(user_email)
         queue = all_specialities_queues[speciality.toString()]
         rainbowsdk.admin.getAllUsers().then((user) => {
