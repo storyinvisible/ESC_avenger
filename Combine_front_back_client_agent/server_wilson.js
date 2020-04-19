@@ -48,22 +48,23 @@ function matchAgent(speciality){
 }
 
 rainbowsdk.events.on('rainbow_onready', () => {
-    // rainbowsdk.admin.getAllUsers().then((user) => {
-    //     let found_user = false;
-    //     let user_id='';
-    //     for (let i = 0; i < user.length; i++) {
-    //         if (user[i].loginEmail != "storyinvisible@gmail.com"||user[i].loginEmail !="superman@email.com") {
-    //             rainbowsdk.admin.deleteUser(user[i].id).then((user) => {
-    //                 console.log("User with id ", user_id.toString(), " is successfully deleted!");
-    //             }).catch((err) => {
-    //                 throw err;
-    //             })
-    //         }
-    //     }
+    rainbowsdk.admin.getAllUsers().then((user) => {
+        let found_user = false;
+        let user_id='';
+        for (let i = 0; i < user.length; i++) {
+            if (user[i].loginEmail != "storyinvisible@gmail.com"&&user[i].loginEmail !="superman@email.com"&&
+            user[i].loginEmail!="ironman@email.com"&&user[i].loginEmail!="black_window@avenger.com"&&user[i].loginEmail!="captain_america@avenger.com" ){
+                rainbowsdk.admin.deleteUser(user[i].id).then((user) => {
+                    console.log("User with id ", user_id.toString(), " is successfully deleted!");
+                }).catch((err) => {
+                    throw err;
+                })
+            }
+        }
         
-    // }).catch((err) => {
-    //     throw err;
-    // })
+    }).catch((err) => {
+        throw err;
+    })
     // //test matchAgent
     // app.get('/new_customer',function(req,res){
     //     res.writeHead(200,{
