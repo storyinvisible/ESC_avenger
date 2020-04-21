@@ -9,13 +9,14 @@
 		</div>
 		<div class="contactCmp-buttons">
 			<button 
-				id ="close_conversation"	
+				
 				class="contactCmp-IM-btn"
 				ng-if="!$ctrl.item.conversation && !isConnectedUser"
 				ng-disabled="isConnected" 
 				ng-click="createConversation()">Open
 			</button>
 			<button 
+				id ="close_conversation"	
 				class="contactCmp-IM-btn"
 				ng-if="$ctrl.item.conversation && !isConnectedUser"
 				ng-disabled="isConnected" 

@@ -1,17 +1,17 @@
 
 
 import org.openqa.selenium.By;
-        import org.openqa.selenium.WebDriver;
-        import org.openqa.selenium.WebElement;
-        import org.openqa.selenium.chrome.ChromeDriver;
-        import org.openqa.selenium.firefox.FirefoxDriver;
-        import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.Select;
 
-        import javax.swing.*;
-        import java.sql.ClientInfoStatus;
-        import java.util.ArrayList;
-        import java.util.List;
-        import java.util.Random;
+import javax.swing.*;
+import java.sql.ClientInfoStatus;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class Web_strain_test {
     int number_agent=3;
@@ -38,7 +38,7 @@ public class Web_strain_test {
         // list.add(agent3);
 
         // list.add(new Agent("huangzhibo@gmail.com", agentPassword,random.nextInt(3) ));
-        System.setProperty("webdriver.gecko.driver", "C:\\MyDrivers\\geckodriver.exe");
+        System.setProperty("webdriver.gecko.driver", "/Users/lijiaxi/Downloads/geckodriver.exe");
         for (Agent agent : agents){
             System.out.println(agent.email);
             WebDriver driver= new FirefoxDriver();
