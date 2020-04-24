@@ -3,9 +3,10 @@ div.connectionCmp-area {
     overflow: hidden;
     border: 1px solid #E9E9E9;
     width: 180px;
-    margin-top: 10px;
+    margin-top: 30px;
     margin-right: 10px;
-    background: #fff;
+    margin-left: -15px;
+    background: black;
     padding: 4px;
 }
 
@@ -15,7 +16,7 @@ div.connectionCmp-title {
     font-size: 12px;
     height: 24px;
     line-height: 24px;
-    background: #9e9e9e;
+    background: #0085ca;
     font-weight: 700;
     color: #eee;
 }
