@@ -23,10 +23,10 @@
   "homepage": "https://github.com/Rainbow-CPaaS/Rainbow-Web-SDK-Samples#readme",
   "dependencies": {
     "cors": "^2.8.5",
-    "express": "^4.17.1",
+    "express": "^4.18.2",
     "rainbow-web-sdk": "^1.69.0"
   },
   "devDependencies": {
-    "http-server": "^0.11.1"
+    "http-server": "^0.11.2"
   }
 }
